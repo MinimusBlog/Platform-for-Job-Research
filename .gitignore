@@ -1,0 +1,14 @@
+# Системные файлы macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Временные файлы
+*.tmp
+*.temp
+*.swp
+*~
+
+# Логи и кэш
+*.log
+.cache/
