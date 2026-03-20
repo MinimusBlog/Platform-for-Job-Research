@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+* {
+    font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+@source "../src";
+@theme {
+    --color-mint: #00E5A0;
+    --color-mint-dark: #00C584;
+    --color-mint-dim: rgba(0, 229, 160, 0.08);
+
+    --color-bg: #0D1117;
+    --color-bg-card: #161B22;
+    --color-bg-elevated: #1C2333;
+
+    --color-border: #30363D;
+    --color-border-light: #444C56;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-bg);
+        color: white;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--color-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-border);
+        border-radius: 9999px;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        background-color: var(--color-mint);
+        color: var(--color-bg);
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-mint-dark);
+    }
+
+    .btn-outline {
+        border: 1px solid var(--color-border);
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+        border-color: var(--color-mint);
+        color: var(--color-mint);
+    }
+
+    .card {
+        background-color: var(--color-bg-card);
+        border: 1px solid var(--color-border);
+        border-radius: 0.75rem;
+    }
+}
