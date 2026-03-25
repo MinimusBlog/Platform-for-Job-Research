@@ -1,21 +1,6 @@
 <template>
   <div class="container">
-    <nav class="navbar">
-      <span class="logo">ТРАМПЛИН</span>
-
-      <button class="burger" @click="menuOpen = !menuOpen">
-        <span></span><span></span><span></span>
-      </button>
-
-      <div class="nav-links" :class="{ open: menuOpen }">
-        <a href="#" class="nav-link">Стажировки</a>
-        <a href="#" class="nav-link">Мероприятия</a>
-        <a href="#" class="nav-link">Компании</a>
-        <a href="#" class="nav-link">База знаний</a>
-      </div>
-
-      <button class="btn-login">Войти</button>
-    </nav>
+    <TheNavbar />
 
     <section class="hero">
       <div class="hero-left">
@@ -75,8 +60,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const menuOpen = ref(false)
+import TheNavbar from '@/components/layout/TheNavbar.vue'
 </script>
 
 <style scoped>
@@ -96,105 +80,6 @@ body {
 .feature-icon--ai {
   background: rgba(99, 102, 241, 0.15);
   color: #818cf8;
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 60px;
-  border-bottom: 1px solid var(--color-border);
-  gap: 32px;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex: 1;
-  justify-content: center;
-}
-
-.nav-link {
-  white-space: nowrap;
-  color: #9ca3af;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  position: relative;
-  padding-bottom: 4px;
-  transition: color 0.2s;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--color-mint);
-    border-radius: 2px;
-    transition: width 0.25s ease;
-  }
-
-  &:hover {
-    color: white;
-
-    &::after {
-      width: 100%;
-    }
-  }
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--color-mint);
-  letter-spacing: 2px;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
-}
-
-.btn-login {
-  border: 1px solid var(--color-border);
-  background: transparent;
-  color: white;
-  font-weight: 700;
-  padding: 10px 28px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
-  transition:
-    border-color 0.2s,
-    color 0.2s,
-    background 0.2s;
-
-  &:hover {
-    border-color: var(--color-mint);
-    color: var(--color-mint);
-    background: var(--color-mint-dim);
-  }
-}
-
-.burger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
-
-  span {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background: white;
-    border-radius: 2px;
-  }
 }
 
 /* ── Hero: grid из двух колонок ── */
@@ -479,7 +364,8 @@ body {
     display: flex;
   }
   .btn-login {
-    display: none;
+    display: inline-block;
+    text-decoration: none;
   }
 
   .nav-links {
