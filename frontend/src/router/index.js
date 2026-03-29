@@ -18,6 +18,10 @@ import AdminUsers from '../views/admin/adminUsers.vue'
 import AdminCompany from '../views/admin/adminCompany.vue'
 import AdminCard from '../views/admin/AdminCard.vue'
 
+// onboarding
+import onboardContact from '../views/onboarding/onboardContact.vue'
+import onboardVacansi from '../views/onboarding/onboardVacansi.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -77,6 +81,17 @@ const router = createRouter({
       component: AdminCard, 
       meta: { requiresAuth: true, requiresAdmin: true } 
     },
+    // routes oboarding
+    {
+      path: '/onboarding/contact',
+      name: 'OnboardContact',
+      component: onboardContact
+    },
+    {
+      path: '/onboarding/vacancies',
+      name: 'OnboardVacancies',
+      component: onboardVacansi
+    }
   ],
 })
 

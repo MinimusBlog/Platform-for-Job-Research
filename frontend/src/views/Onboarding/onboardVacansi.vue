@@ -1,16 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 
-// Состояние активной вкладки
-const activeTab = ref('Мои вакансии')
+const activeTab = ref('ВАКАНСИИ')
 
-// Меню для работодателя (Employer Hub)
-// Сюда ты сможешь вставить ссылки на свои .vue файлы или роуты
 const menuItems = [
-  { name: 'МЕНТОРЫ', link: '#' },
-  { name: 'ВАКАНСИИ', link: '#' },
-  { name: 'КОНТАКТЫ', link: 'onboardcontact.vue' },
-  { name: 'СООБЩЕСТВО', link: '#' },
+  { name: 'МЕНТОРЫ', link: '#', icon: '👤' },
+  { name: 'ВАКАНСИИ', link: '/onboarding/vacancies', icon: '💼' },
+  { name: 'КОНТАКТЫ', link: '/onboarding/contact', icon: '📞' },
+  { name: 'СООБЩЕСТВО', link: '#', icon: '🌐' },
 ]
 
 const features = [
@@ -34,7 +31,6 @@ const features = [
 
 <template>
   <div class="flex min-h-screen bg-[var(--color-bg)] text-white font-['Montserrat']">
-    <!-- БОКОВОЕ МЕНЮ (SIDEBAR) -->
     <aside class="w-64 border-r border-[var(--color-border)] flex flex-col p-6 shrink-0">
       <div class="mb-10 text-[var(--color-mint)] font-bold text-xl tracking-widest uppercase">
         ТРАМПЛИН
@@ -45,26 +41,24 @@ const features = [
           Employer Hub
         </p>
 
-        <a
+        <router-link
           v-for="item in menuItems"
           :key="item.name"
-          :href="item.link"
-          @click.prevent="activeTab = item.name"
-          :class="[
-            item.name === activeTab
-              ? 'text-[var(--color-mint)] border-[var(--color-mint)]'
-              : 'text-gray-400 border-transparent hover:text-white hover:bg-white/5',
-          ]"
+          :to="item.link"
+          class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 border-l-2 border-transparent group"
+          active-class="active-link"
         >
-          <span class="opacity-50">{{ item.icon }}</span>
-          {{ item.name }}
-        </a>
+          <span class="opacity-50 group-hover:opacity-100 transition-opacity">{{ item.icon }}</span>
+          <span class="text-xs font-bold tracking-wider uppercase">{{ item.name }}</span>
+        </router-link>
       </nav>
 
-      <!-- Профиль -->
       <div class="mt-auto p-4 card flex items-center gap-3">
         <div class="w-10 h-10 rounded-full border border-[var(--color-mint)] p-0.5">
-          <img src="https://ui-avatars.com" class="rounded-full" />
+          <img
+            src="https://ui-avatars.com/api/?name=Tech+Recruit&background=0D1117&color=00E5A0"
+            class="rounded-full w-full h-full"
+          />
         </div>
         <div class="overflow-hidden">
           <p class="text-xs font-bold truncate">Tech Recruit</p>
@@ -73,9 +67,7 @@ const features = [
       </div>
     </aside>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <main class="flex-1 flex flex-col">
-      <!-- Верхняя панель (Header) -->
       <header
         class="h-16 border-b border-[var(--color-border)] flex items-center justify-end px-8 gap-6"
       >
@@ -89,9 +81,7 @@ const features = [
         </button>
       </header>
 
-      <!-- Центральный блок (Empty State) -->
       <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-        <!-- Карточка с 3D графикой (как на картинке) -->
         <div
           class="w-full max-w-2xl aspect-video card relative overflow-hidden mb-12 flex items-center justify-center group"
         >
@@ -99,7 +89,6 @@ const features = [
             class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] to-transparent opacity-60"
           ></div>
 
-          <!-- Заглушка под 3D картинку -->
           <div
             class="relative z-10 w-48 h-48 bg-gradient-to-br from-gray-700 to-gray-900 rounded-3xl rotate-12 shadow-2xl flex items-center justify-center border border-white/10 group-hover:rotate-0 transition-transform duration-700"
           >
@@ -109,7 +98,6 @@ const features = [
             <span class="text-4xl">📦</span>
           </div>
 
-          <!-- Полоска снизу внутри карточки -->
           <div
             class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-mint)] to-transparent"
           ></div>
@@ -129,7 +117,6 @@ const features = [
         </div>
       </div>
 
-      <!-- Сетка преимуществ снизу -->
       <div class="p-12 grid grid-cols-3 gap-12 border-t border-[var(--color-border)]">
         <div v-for="feat in features" :key="feat.title">
           <div class="text-[var(--color-mint)] mb-4 text-xl opacity-80">{{ feat.icon }}</div>
@@ -138,7 +125,6 @@ const features = [
         </div>
       </div>
 
-      <!-- FOOTER -->
       <footer
         class="p-8 border-t border-[var(--color-border)] flex justify-between items-center bg-black/20"
       >
@@ -156,11 +142,17 @@ const features = [
 </template>
 
 <style scoped>
-/* Эти стили дополняют твой main.css для соответствия картинке */
 .card {
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 24px;
+}
+
+/* Стили для активной ссылки из роутера */
+.active-link {
+  color: var(--color-mint) !important;
+  border-left-color: var(--color-mint) !important;
+  background-color: rgba(0, 229, 160, 0.05);
 }
 
 .btn-primary {

@@ -1,8 +1,8 @@
 <script setup>
 const navLinks = [
   { name: 'МЕНТОРЫ', link: '#' },
-  { name: 'ВАКАНСИИ', link: 'onboardvacansi.vue' },
-  { name: 'КОНТАКТЫ', link: '#', active: true },
+  { name: 'ВАКАНСИИ', link: '/onboarding/vacancies' }, // Путь из роутера
+  { name: 'КОНТАКТЫ', link: '/onboarding/contact', active: true },
   { name: 'СООБЩЕСТВО', link: '#' },
 ]
 
@@ -36,17 +36,17 @@ const features = [
       </div>
 
       <nav class="flex gap-10">
-        <a
+        <router-link
           v-for="link in navLinks"
           :key="link.name"
-          :href="link.link"
+          :to="link.link"
           :class="[
             'font-bold tracking-[0.2em] transition-colors hover:text-[var(--color-mint)]',
             link.active ? 'text-[var(--color-mint)]' : 'text-gray-400',
           ]"
         >
           {{ link.name }}
-        </a>
+        </router-link>
       </nav>
 
       <div class="flex items-center gap-6">
