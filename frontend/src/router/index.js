@@ -15,6 +15,8 @@ import ApplicantProfileView from '../views/applicant/applicantprofile.vue'
 // Админка
 import AdminMain from '../views/admin/adminMain.vue'
 import AdminUsers from '../views/admin/adminUsers.vue'
+import AdminCompany from '../views/admin/adminCompany.vue'
+import AdminCard from '../views/admin/AdminCard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,13 +52,30 @@ const router = createRouter({
     },
 
     // Раздел АДМИНА
-    {
-      path: '/admin',
-      meta: { requiresAuth: true, requiresAdmin: true },
-      children: [
-        { path: 'main', name: 'admin-main', component: AdminMain },
-        { path: 'users', name: 'admin-users', component: AdminUsers },
-      ],
+    { 
+      path: '/admin/main', 
+      name: 'admin-main', 
+      component: AdminMain, 
+      meta: { requiresAuth: true, requiresAdmin: true } 
+    },
+    { 
+      path: '/admin/users', 
+      name: 'admin-users', 
+      component: AdminUsers, 
+      meta: { requiresAuth: true, requiresAdmin: true } 
+    },
+    // НОВЫЕ МАРШРУТЫ ДЛЯ АДМИНКИ:
+    { 
+      path: '/admin/company', 
+      name: 'admin-company', 
+      component: AdminCompany, 
+      meta: { requiresAuth: true, requiresAdmin: true } 
+    },
+    { 
+      path: '/admin/cards', 
+      name: 'admin-cards', 
+      component: AdminCard, 
+      meta: { requiresAuth: true, requiresAdmin: true } 
     },
   ],
 })

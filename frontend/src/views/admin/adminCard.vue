@@ -1,334 +1,274 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-// 1. Состояние навигации
-const activeTab = ref('ПОЛЬЗОВАТЕЛИ')
-const userType = ref('Соискатели') // Переключатель вверху таблицы
+const route = useRoute()
+const activeTab = ref('')
+const cardType = ref('Активные')
+const searchQuery = ref('')
 
-// 2. Данные (имитация из скриншота)
-const users = ref([
+const navItems = [
+  { name: 'ГЛАВНАЯ', icon: '🏠', routeName: 'admin-main' },
+  { name: 'ПОЛЬЗОВАТЕЛИ', icon: '👥', routeName: 'admin-users' },
+  { name: 'РАБОТОДАТЕЛИ', icon: '💼', routeName: 'admin-main' },
+  { name: 'КАРТОЧКИ', icon: '🗂️', routeName: 'admin-main' },
+]
+
+watch(
+  () => route.name,
+  (newName) => {
+    const currentItem = navItems.find((item) => item.routeName === newName)
+    if (currentItem) activeTab.value = currentItem.name
+  },
+  { immediate: true },
+)
+
+// Данные карточек (Вакансии/Проекты)
+const cards = ref([
   {
-    id: 88219,
-    name: 'Артем Марков',
-    email: 'a.markov@it-jump.ru',
-    role: 'FRONTEND DEV',
+    id: 102,
+    title: 'Senior Frontend Developer',
+    company: 'CyberSphere',
+    category: 'Разработка',
+    views: '1.2K',
     status: 'Active',
-    lastSeen: 'Сегодня, 14:20',
-    avatar: 'https://i.pravatar.cc',
+    date: '12.10',
   },
   {
-    id: 88215,
-    name: 'Елена Кузнецова',
-    email: 'kuznetsova.e@gmail.com',
-    role: 'UI/UX LEAD',
+    id: 105,
+    title: 'UI/UX Designer (Fintech)',
+    company: 'Трамплин ИТ',
+    category: 'Дизайн',
+    views: '840',
     status: 'Active',
-    lastSeen: 'Вчера, 09:15',
-    avatar: 'https://i.pravatar.cc',
+    date: '11.10',
   },
   {
-    id: 87301,
-    name: 'Иван Петров',
-    email: 'i.petrov@spam.ru',
-    role: 'JUNIOR QA',
-    status: 'Banned',
-    lastSeen: '12 Окт. 2023',
-    avatar: 'https://i.pravatar.cc',
+    id: 108,
+    title: 'Data Scientist',
+    company: 'DataFlow',
+    category: 'Аналитика',
+    views: '2.1K',
+    status: 'Archived',
+    date: '05.10',
   },
   {
-    id: 88201,
-    name: 'Дарья Васильева',
-    email: 'darya_v@edu.it',
-    role: 'PYTHON JUNIOR',
+    id: 110,
+    title: 'Project Manager',
+    company: 'Иннотех',
+    category: 'Менеджмент',
+    views: '450',
     status: 'Active',
-    lastSeen: '3 часа назад',
-    avatar: 'https://i.pravatar.cc',
+    date: '01.10',
   },
 ])
 
-const searchQuery = ref('')
-
-// 3. Поиск (фильтрация)
-const filteredUsers = computed(() => {
-  return users.value.filter(
-    (u) =>
-      u.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      u.id.toString().includes(searchQuery.value),
+const filteredCards = computed(() => {
+  return cards.value.filter(
+    (c) =>
+      c.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      c.company.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
-
-// Меню
-const menuLinks = [
-  { name: 'ГЛАВНАЯ', icon: '■', link: 'adminmain.vue' },
-  { name: 'ПОЛЬЗОВАТЕЛИ', icon: '👥', link: 'admidusers.vue' },
-  { name: 'РАБОТОДАТЕЛИ', icon: '💼', link: 'admincompani.vue' },
-  { name: 'КАРТОЧКИ', icon: '🗂', link: '#' },
-  { name: 'ТЕГИ', icon: '🏷' },
-  { name: 'КУРАТОРЫ', icon: '🎧', link: '#' },
-]
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-[#0D1117] text-white font-['Montserrat']">
-    <!-- SIDEBAR -->
-    <aside class="w-64 border-r border-[#30363D] flex flex-col p-6 shrink-0">
-      <div class="mb-10">
-        <p class="text-[10px] text-gray-500 font-bold tracking-[0.2em] uppercase">Admin Core</p>
-        <h2 class="text-xl font-bold text-blue-500 tracking-tighter italic">CONSOLE</h2>
-        <p class="text-[8px] text-gray-600 tracking-[0.4em] uppercase">System Control</p>
+  <div class="flex h-screen w-full bg-[#0d1117] text-white font-sans overflow-hidden">
+    <aside class="w-64 border-r border-[#30363d] bg-[#161b22] flex flex-col p-6 z-50 shrink-0">
+      <div class="mb-10 flex items-center gap-3 px-2">
+        <div class="w-2 h-7 bg-mint rounded-full shadow-[0_0_15px_rgba(0,229,160,0.5)]"></div>
+        <span class="font-black text-xl tracking-tighter text-mint uppercase italic">Трамплин</span>
       </div>
 
-      <nav class="flex flex-col gap-1">
-        <a
-          v-for="item in menuLinks"
-          :key="item.name"
-          href="#"
-          @click.prevent="activeTab = item.name"
-          :class="[
-            'font-bold tracking-widest transition-all',
-            activeTab === item.name
-              ? 'bg-[#1C2333] text-blue-400 border-l-2 border-blue-500'
-              : 'text-gray-500 hover:text-gray-300',
-          ]"
+      <nav class="flex-1 space-y-1">
+        <p
+          class="text-[10px] text-gray-500 font-bold mb-4 ml-2 tracking-widest uppercase opacity-40"
         >
-          <span class="text-sm opacity-70">{{ item.icon }}</span> {{ item.name }}
-        </a>
+          Управление
+        </p>
+        <router-link
+          v-for="item in navItems"
+          :key="item.name"
+          :to="{ name: item.routeName }"
+          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all border border-transparent"
+          :class="
+            activeTab === item.name || item.name === 'КАРТОЧКИ'
+              ? 'bg-mint/10 text-mint border-mint/20 shadow-lg'
+              : 'text-gray-400 hover:bg-white/5 hover:text-white'
+          "
+        >
+          <span class="text-lg">{{ item.icon }}</span>
+          {{ item.name }}
+        </router-link>
       </nav>
 
-      <div class="mt-auto pt-6 space-y-6">
-        <button
-          class="w-full py-3 bg-[#4F46E5] hover:bg-[#4338CA] text-[10px] font-bold rounded-lg transition-colors uppercase tracking-widest shadow-[0_0_15px_rgba(79,70,229,0.3)]"
-        >
-          Generate Report
-        </button>
+      <div
+        class="mt-auto p-4 bg-[#0d1117] border border-[#30363d] rounded-2xl flex items-center gap-3"
+      >
         <div
-          class="text-gray-500 text-[10px] font-bold flex flex-col gap-4 px-2 uppercase tracking-tighter"
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-mint to-mint-dark flex items-center justify-center font-bold text-[#0d1117]"
         >
-          <a href="#" class="hover:text-white flex items-center gap-2">⚙ Settings</a>
-          <a href="#" class="hover:text-white flex items-center gap-2">🚪 Logout</a>
+          AK
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs font-black truncate italic uppercase leading-none">Алексей К.</p>
+          <p class="text-[9px] text-mint font-bold uppercase mt-1 tracking-tighter">
+            ● Контент-менеджер
+          </p>
         </div>
       </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 p-12 overflow-y-auto">
-      <!-- Header Area -->
-      <div class="flex justify-between items-start mb-12">
-        <div>
-          <h1 class="text-4xl font-serif mb-2">Пользователи</h1>
-          <p class="text-gray-500 text-sm max-w-md leading-relaxed">
-            Управление участниками платформы Трамплин: соискатели и представители компаний.
-          </p>
+    <main class="flex-1 flex flex-col h-full overflow-y-auto bg-[#0d1117]">
+      <header
+        class="h-20 border-b border-[#30363d] bg-[#161b22]/50 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-10 shrink-0"
+      >
+        <div class="flex items-center gap-6">
+          <h1 class="text-2xl font-black italic uppercase tracking-tighter text-nowrap">
+            Управление <span class="text-mint text-xl">Карточками</span>
+          </h1>
+          <div class="flex bg-[#0d1117] p-1 rounded-xl border border-[#30363d]">
+            <button
+              @click="cardType = 'Активные'"
+              :class="cardType === 'Активные' ? 'bg-mint text-[#0d1117]' : 'text-gray-500'"
+              class="px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all"
+            >
+              Активные
+            </button>
+            <button
+              @click="cardType = 'Архив'"
+              :class="cardType === 'Архив' ? 'bg-mint text-[#0d1117]' : 'text-gray-500'"
+              class="px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all"
+            >
+              Архив
+            </button>
+          </div>
         </div>
 
-        <!-- Toggle Switch -->
-        <div class="bg-[#161B22] p-1 rounded-xl border border-[#30363D] flex">
-          <button
-            @click="userType = 'Соискатели'"
-            :class="
-              userType === 'Соискатели'
-                ? 'bg-[#00E5A0] text-black font-bold transition-all'
-                : 'text-gray-500 font-bold transition-all'
-            "
-          >
-            Соискатели
-          </button>
-          <button
-            @click="userType = 'Работодатели'"
-            :class="
-              userType === 'Работодатели'
-                ? 'bg-[#00E5A0] text-black font-bold transition-all'
-                : 'text-gray-500 font-bold transition-all'
-            "
-          >
-            Работодатели
-          </button>
-        </div>
-      </div>
-
-      <!-- Filters Bar -->
-      <div class="flex gap-4 mb-8">
         <div
-          class="flex-1 bg-[#161B22] border border-[#30363D] rounded-xl px-5 flex items-center gap-3"
+          class="flex items-center gap-4 bg-[#0d1117] px-4 py-2 rounded-xl border border-[#30363d] w-80"
         >
-          <span class="text-gray-500 text-sm">🔍</span>
+          <span class="text-gray-500">🔍</span>
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Поиск по имени, email или ID..."
-            class="bg-transparent border-none text-xs w-full focus:ring-0 text-gray-300 py-3"
+            placeholder="Поиск вакансий..."
+            class="bg-transparent border-none text-xs focus:outline-none w-full text-white font-bold"
           />
         </div>
-        <button
-          class="bg-[#161B22] border border-[#30363D] px-6 rounded-xl text-[10px] font-bold tracking-widest flex items-center gap-3"
-        >
-          <span class="text-blue-500">≡</span> СТАТУС
-        </button>
-        <button
-          class="bg-[#161B22] border border-[#30363D] px-6 rounded-xl text-[10px] font-bold tracking-widest flex items-center gap-3"
-        >
-          <span class="text-green-500">📅</span> АКТИВНОСТЬ
-        </button>
-      </div>
+      </header>
 
-      <!-- Table -->
-      <div class="mb-10">
-        <!-- Labels -->
-        <div
-          class="grid grid-cols-6 px-8 mb-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]"
-        >
-          <div class="col-span-1">Пользователь</div>
-          <div class="col-span-1">Email</div>
-          <div class="col-span-1 text-center">Роль</div>
-          <div class="col-span-1 text-center">Статус</div>
-          <div class="col-span-1">Последний вход</div>
-          <div class="col-span-1 text-right">Действия</div>
-        </div>
-
-        <!-- Rows -->
-        <div class="space-y-2">
+      <div class="p-8 w-full max-w-[1400px] mx-auto space-y-8">
+        <div class="grid grid-cols-12 gap-6">
           <div
-            v-for="user in filteredUsers"
-            :key="user.id"
-            class="grid grid-cols-6 items-center bg-[#161B22] border border-[#30363D] hover:bg-[#1C2333] p-5 rounded-2xl transition-all cursor-default group"
+            class="col-span-12 lg:col-span-3 bg-[#161b22] border border-[#30363d] p-8 rounded-[2.5rem] flex flex-col justify-between group"
           >
-            <div class="flex items-center gap-4">
-              <img
-                :src="user.avatar"
-                class="w-11 h-11 rounded-xl bg-gray-800 border border-white/5 shadow-lg"
-              />
-              <div>
-                <div class="text-sm font-bold group-hover:text-blue-400 transition-colors">
-                  {{ user.name }}
+            <div>
+              <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2">
+                Всего карточек
+              </p>
+              <h3 class="text-5xl font-black italic tracking-tighter">2,481</h3>
+            </div>
+            <button
+              class="mt-8 w-full py-4 bg-mint text-[#0d1117] rounded-2xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-[0_10px_20px_rgba(0,229,160,0.1)]"
+            >
+              + Создать карту
+            </button>
+          </div>
+
+          <div
+            class="col-span-12 lg:col-span-9 bg-[#161b22] border border-[#30363d] rounded-[2.5rem] overflow-hidden"
+          >
+            <div
+              class="grid grid-cols-5 px-8 py-5 text-[9px] font-black text-gray-500 uppercase tracking-widest border-b border-[#30363d] bg-white/[0.01]"
+            >
+              <div class="col-span-2">Название и компания</div>
+              <div class="text-center">Категория</div>
+              <div class="text-center">Просмотры</div>
+              <div class="text-right">Статус</div>
+            </div>
+
+            <div class="divide-y divide-[#30363d]">
+              <div
+                v-for="card in filteredCards"
+                :key="card.id"
+                class="grid grid-cols-5 px-8 py-5 items-center hover:bg-white/[0.02] transition-all group"
+              >
+                <div class="col-span-2">
+                  <p
+                    class="text-sm font-black italic tracking-tight group-hover:text-mint transition-colors"
+                  >
+                    {{ card.title }}
+                  </p>
+                  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">
+                    {{ card.company }}
+                  </p>
                 </div>
-                <div class="text-[9px] text-gray-500 font-mono">ID: {{ user.id }}</div>
+                <div class="text-center">
+                  <span
+                    class="text-[9px] font-black px-2 py-1 rounded-lg border border-[#30363d] bg-[#0d1117] text-gray-400 uppercase"
+                    >{{ card.category }}</span
+                  >
+                </div>
+                <div class="text-center">
+                  <p class="text-xs font-black italic">{{ card.views }}</p>
+                  <p class="text-[8px] text-gray-600 font-bold uppercase tracking-tighter">
+                    unique
+                  </p>
+                </div>
+                <div class="flex justify-end items-center gap-3">
+                  <div
+                    :class="
+                      card.status === 'Active' ? 'bg-mint shadow-[0_0_10px_#00e5a0]' : 'bg-gray-600'
+                    "
+                    class="w-1.5 h-1.5 rounded-full"
+                  ></div>
+                  <button class="text-gray-500 hover:text-white transition-colors">⚙️</button>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="text-xs text-gray-400 font-medium">{{ user.email }}</div>
-
-            <div class="text-center">
-              <span
-                class="text-[8px] font-black bg-[#0D1117] px-2.5 py-1 rounded-md text-gray-500 border border-[#30363D] uppercase tracking-tighter"
-              >
-                {{ user.role }}
-              </span>
-            </div>
-
-            <div class="flex items-center justify-center gap-2 text-[10px] font-bold">
-              <span
-                :class="[
-                  'w-1.5 h-1.5 rounded-full',
-                  user.status === 'Active'
-                    ? 'bg-[#00E5A0] shadow-[0_0_8px_#00E5A0]'
-                    : 'bg-red-500 shadow-[0_0_8px_red]',
-                ]"
-              ></span>
-              {{ user.status }}
-            </div>
-
-            <div class="text-[10px] text-gray-500 font-medium">{{ user.lastSeen }}</div>
-
+          <div
+            class="col-span-12 md:col-span-6 lg:col-span-4 bg-[#161b22] border border-[#30363d] p-8 rounded-[2.5rem] relative overflow-hidden group"
+          >
             <div
-              class="text-right pr-4 text-gray-600 hover:text-white cursor-pointer transition-colors text-xl"
-            >
-              ⋮
+              class="absolute -bottom-10 -left-10 w-32 h-32 bg-mint blur-[80px] opacity-10 group-hover:opacity-20 transition-opacity"
+            ></div>
+            <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-4">
+              Популярные теги
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="tag in ['Python', 'Vue.js', 'Remote', 'Middle', 'SQL', 'Fintech']"
+                :key="tag"
+                class="px-3 py-1.5 bg-[#0d1117] border border-[#30363d] rounded-xl text-[10px] font-black text-mint uppercase italic tracking-tighter"
+                >#{{ tag }}</span
+              >
             </div>
           </div>
-        </div>
 
-        <!-- Pagination -->
-        <div class="flex justify-between items-center mt-6 px-2">
-          <p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
-            Показано {{ filteredUsers.length }} из 1,240 пользователей
-          </p>
-          <div class="flex gap-2">
-            <button
-              class="w-8 h-8 rounded-lg bg-[#161B22] border border-[#30363D] text-xs flex items-center justify-center text-gray-500"
-            >
-              ‹
-            </button>
-            <button
-              class="w-8 h-8 rounded-lg bg-blue-600 text-xs flex items-center justify-center font-bold"
-            >
-              1
-            </button>
-            <button
-              class="w-8 h-8 rounded-lg bg-[#161B22] border border-[#30363D] text-xs flex items-center justify-center text-gray-500"
-            >
-              2
-            </button>
-            <button
-              class="w-8 h-8 rounded-lg bg-[#161B22] border border-[#30363D] text-xs flex items-center justify-center text-gray-500"
-            >
-              3
-            </button>
-            <button
-              class="w-8 h-8 rounded-lg bg-[#161B22] border border-[#30363D] text-xs flex items-center justify-center text-gray-500"
-            >
-              ›
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer Stats -->
-      <div class="grid grid-cols-3 gap-6">
-        <div
-          class="bg-[#161B22] border border-[#30363D] p-8 rounded-3xl relative overflow-hidden group"
-        >
           <div
-            class="absolute top-4 right-6 text-gray-800 group-hover:text-blue-500/20 transition-colors text-4xl italic font-serif opacity-10"
+            class="col-span-12 md:col-span-6 lg:col-span-8 bg-gradient-to-br from-[#161b22] to-[#1c2333] border border-mint/10 p-8 rounded-[2.5rem] flex items-center justify-between"
           >
-            Trend
+            <div class="max-w-md">
+              <h4 class="text-xl font-black italic uppercase tracking-tighter mb-2 text-mint">
+                Авто-оптимизация
+              </h4>
+              <p class="text-xs text-gray-400 font-bold leading-relaxed uppercase tracking-tight">
+                Система Трамплин.AI автоматически поднимает карточки с низким охватом, если они
+                соответствуют профилям активных соискателей.
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-4xl font-black italic text-white tracking-tighter">84%</p>
+              <p class="text-[9px] text-gray-500 font-black uppercase tracking-widest mt-1">
+                Efficiency rate
+              </p>
+            </div>
           </div>
-          <p class="text-[9px] text-[#00E5A0] font-black uppercase tracking-[0.2em] mb-3">
-            Прирост (30д)
-          </p>
-          <div class="text-4xl font-bold tracking-tighter">+12.4%</div>
-        </div>
-
-        <div class="bg-[#161B22] border border-[#30363D] p-8 rounded-3xl relative overflow-hidden">
-          <div
-            class="absolute top-6 right-8 w-10 h-10 border-2 border-white/5 rounded-full flex items-center justify-center opacity-20 italic"
-          >
-            ✓
-          </div>
-          <p class="text-[9px] text-gray-500 font-black uppercase tracking-[0.2em] mb-3">
-            Верифицировано
-          </p>
-          <div class="text-4xl font-bold tracking-tighter">942</div>
-          <p class="text-[9px] text-gray-600 mt-2 font-bold uppercase tracking-tight">
-            76% всех соискателей
-          </p>
-        </div>
-
-        <div
-          class="bg-[#161B22] border border-[#30363D] p-8 rounded-3xl bg-gradient-to-br from-[#161B22] to-[#0D1117] relative"
-        >
-          <div class="absolute top-6 right-8 text-2xl opacity-10">🚀</div>
-          <p class="text-[9px] text-gray-500 font-black uppercase tracking-[0.2em] mb-3">
-            Нанято через трамплин
-          </p>
-          <div class="text-4xl font-bold tracking-tighter italic">158</div>
-          <p class="text-[9px] text-gray-600 mt-2 font-bold uppercase tracking-tight italic">
-            Рекордный показатель месяца
-          </p>
         </div>
       </div>
     </main>
   </div>
 </template>
-
-<style>
-/* Шрифты и кастомные скроллы */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-thumb {
-  background: #30363d;
-  border-radius: 10px;
-}
-input::placeholder {
-  color: #4b5563;
-}
-</style>

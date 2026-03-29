@@ -1,9 +1,26 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-const activeTab = ref('Работодатели')
+const route = useRoute()
+const activeTab = ref('')
 
-// Данные для таблицы (как на скрине)
+const navItems = [
+  { name: 'ГЛАВНАЯ', icon: '🏠', routeName: 'admin-main' },
+  { name: 'ПОЛЬЗОВАТЕЛИ', icon: '👥', routeName: 'admin-users' },
+  { name: 'РАБОТОДАТЕЛИ', icon: '💼', routeName: 'admin-main', badge: 18 },
+  { name: 'КАРТОЧКИ', icon: '🗂️', routeName: 'admin-main' },
+]
+
+watch(
+  () => route.name,
+  (newName) => {
+    const currentItem = navItems.find((item) => item.routeName === newName)
+    if (currentItem) activeTab.value = currentItem.name
+  },
+  { immediate: true },
+)
+
 const employers = ref([
   {
     id: 1,
@@ -42,234 +59,284 @@ const employers = ref([
     status: 'pending',
   },
 ])
-
-const menuItems = [
-  { name: 'Главная', icon: 'grid', link: 'adminmain.vue' },
-  { name: 'Пользователи', icon: 'users', link: 'admidusers.vue' },
-  { name: 'Работодатели', icon: 'briefcase', link: '#', badge: 18 },
-  { name: 'Карточки', icon: 'layout', link: 'admincard.vue' },
-  { name: 'Теги', icon: 'tag', link: '#' },
-  { name: 'Кураторы', icon: 'user-check', link: '#' },
-]
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-[var(--color-bg)] text-white font-['Montserrat']">
-    <!-- SIDEBAR -->
-    <aside class="w-64 border-r border-[var(--color-border)] flex flex-col p-6 shrink-0">
-      <div class="mb-10 flex items-center gap-2">
-        <div class="w-8 h-8 bg-[var(--color-mint)] rounded-lg flex items-center justify-center">
-          <span class="text-[var(--color-bg)] font-bold">Т</span>
-        </div>
-        <div class="leading-none">
-          <div class="text-sm font-bold tracking-tight">Трамплин</div>
-          <div class="text-[8px] text-gray-500 uppercase tracking-widest">Панель управления</div>
-        </div>
+  <div class="flex h-screen w-full bg-[#0d1117] text-white font-sans overflow-hidden">
+    <aside class="w-64 border-r border-[#30363d] bg-[#161b22] flex flex-col p-6 z-50 shrink-0">
+      <div class="mb-10 flex items-center gap-3 px-2">
+        <div class="w-2 h-7 bg-mint rounded-full shadow-[0_0_15px_rgba(0,229,160,0.5)]"></div>
+        <span class="font-black text-xl tracking-tighter text-mint uppercase italic">Трамплин</span>
       </div>
 
-      <nav class="space-y-1">
-        <a
-          v-for="item in menuItems"
-          :key="item.name"
-          :href="item.link"
-          @click.prevent="activeTab = item.name"
-          :class="[
-            item.link === activeTab
-              ? 'text-[var(--color-mint)]'
-              : 'text-gray-400 hover:bg-white/5 hover:text-white',
-          ]"
+      <nav class="flex-1 space-y-1">
+        <p
+          class="text-[10px] text-gray-500 font-bold mb-4 ml-2 tracking-widest uppercase opacity-40"
         >
-          <span class="flex items-center gap-3">
-            <span class="opacity-50">#</span> {{ item.name }}
-          </span>
+          Система
+        </p>
+        <router-link
+          v-for="item in navItems"
+          :key="item.name"
+          :to="{ name: item.routeName }"
+          class="flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all border border-transparent group"
+          :class="
+            activeTab === item.name || item.name === 'РАБОТОДАТЕЛИ'
+              ? 'bg-mint/10 text-mint border-mint/20 shadow-lg'
+              : 'text-gray-400 hover:bg-white/5 hover:text-white'
+          "
+        >
+          <div class="flex items-center gap-3">
+            <span class="text-lg">{{ item.icon }}</span>
+            {{ item.name }}
+          </div>
           <span
             v-if="item.badge"
-            class="bg-[var(--color-mint)] text-[var(--color-bg)] text-[10px] font-bold px-2 py-0.5 rounded-full"
+            class="bg-mint text-[#0d1117] text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-[0_0_10px_rgba(0,229,160,0.3)]"
           >
             {{ item.badge }}
           </span>
-        </a>
+        </router-link>
       </nav>
 
-      <!-- Профиль куратора снизу -->
       <div
-        class="mt-auto p-3 card flex items-center gap-3 bg-[var(--color-bg-card)] border-[var(--color-border)]"
+        class="mt-auto p-4 bg-[#0d1117] border border-[#30363d] rounded-2xl flex items-center gap-3"
       >
-        <img src="https://ui-avatars.com" class="w-10 h-10 rounded-lg" />
-        <div class="overflow-hidden">
-          <p class="text-xs font-bold truncate">Александр К.</p>
-          <p class="text-[9px] text-gray-500 uppercase">Старший куратор</p>
+        <div
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-mint to-mint-dark flex items-center justify-center font-bold text-[#0d1117]"
+        >
+          АК
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs font-black truncate italic uppercase leading-none">Александр К.</p>
+          <p class="text-[9px] text-gray-500 font-bold uppercase mt-1">Старший куратор</p>
         </div>
       </div>
     </aside>
 
-    <!-- MAIN -->
-    <main class="flex-1 flex flex-col overflow-hidden">
-      <!-- Top Bar -->
+    <main class="flex-1 flex flex-col h-full overflow-y-auto bg-[#0d1117]">
       <header
-        class="h-16 border-b border-[var(--color-border)] flex items-center justify-between px-8 bg-[var(--color-bg)]/80 backdrop-blur-md"
+        class="h-20 border-b border-[#30363d] bg-[#161b22]/50 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-10 shrink-0"
       >
         <div
-          class="flex items-center gap-4 bg-[var(--color-bg-card)] px-4 py-2 rounded-lg border border-[var(--color-border)]"
+          class="flex items-center gap-4 bg-[#0d1117] px-4 py-2.5 rounded-2xl border border-[#30363d] w-96 transition-focus focus-within:border-mint/50 group"
         >
-          <span class="text-gray-500 text-xs italic">🔍 Поиск компаний...</span>
+          <span class="text-gray-500">🔍</span>
+          <input
+            type="text"
+            placeholder="Поиск компаний по ИНН или названию..."
+            class="bg-transparent border-none text-xs focus:outline-none w-full text-white"
+          />
         </div>
-        <div class="flex items-center gap-4 text-gray-400">
-          <span class="text-xs">Регион: <b>Москва и область</b></span>
-          <span class="cursor-pointer hover:text-white">⚙️</span>
+        <div class="flex items-center gap-6">
+          <div
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500"
+          >
+            <span class="w-2 h-2 rounded-full bg-mint"></span> Регион:
+            <span class="text-white">Москва</span>
+          </div>
+          <button
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all"
+          >
+            ⚙️
+          </button>
         </div>
       </header>
 
-      <!-- Content Area -->
-      <div class="p-10 overflow-y-auto custom-scrollbar">
-        <!-- Title & Stats -->
-        <div class="flex justify-between items-start mb-10">
+      <div class="p-8 w-full max-w-[1400px] mx-auto space-y-8">
+        <div class="flex justify-between items-end">
           <div>
-            <h1 class="text-3xl font-bold mb-2">Модерация работодателей</h1>
-            <p class="text-gray-400 text-sm">
-              Проверка и верификация новых компаний, подавших заявку.
+            <h1 class="text-5xl font-black italic tracking-tighter uppercase leading-none">
+              Модерация <span class="text-mint text-4xl">Бизнеса</span>
+            </h1>
+            <p
+              class="text-gray-500 font-bold mt-4 tracking-wide uppercase text-[10px] opacity-60 italic"
+            >
+              Верификация корпоративных аккаунтов
             </p>
           </div>
           <div class="flex gap-4">
-            <div class="card px-6 py-3 flex items-center gap-4">
+            <div
+              class="bg-[#161b22] border border-[#30363d] p-5 rounded-[2rem] flex items-center gap-4 min-w-[180px]"
+            >
               <div
-                class="w-10 h-10 bg-blue-500/10 rounded flex items-center justify-center text-blue-500"
+                class="w-12 h-12 bg-mint/10 rounded-2xl flex items-center justify-center text-mint text-xl shadow-inner italic"
               >
                 📥
               </div>
               <div>
-                <p class="text-[9px] text-gray-500 uppercase font-bold">Ожидают</p>
-                <p class="text-xl font-bold">18</p>
+                <p class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Ожидают</p>
+                <p class="text-2xl font-black italic">18</p>
               </div>
             </div>
-            <div class="card px-6 py-3 flex items-center gap-4">
+            <div
+              class="bg-[#161b22] border border-[#30363d] p-5 rounded-[2rem] flex items-center gap-4 min-w-[180px]"
+            >
               <div
-                class="w-10 h-10 bg-[var(--color-mint-dim)] rounded flex items-center justify-center text-[var(--color-mint)]"
+                class="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 text-xl shadow-inner italic italic"
               >
                 ✔
               </div>
               <div>
-                <p class="text-[9px] text-gray-500 uppercase font-bold">Верифицировано</p>
-                <p class="text-xl font-bold">1,240</p>
+                <p class="text-[9px] text-gray-500 font-black uppercase tracking-widest">В базе</p>
+                <p class="text-2xl font-black italic">1,240</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Таблица -->
-        <div
-          class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl overflow-hidden mb-10"
-        >
+        <div class="bg-[#161b22] border border-[#30363d] rounded-[2.5rem] overflow-hidden">
           <div
-            class="grid grid-cols-12 px-6 py-4 border-b border-[var(--color-border)] text-[10px] font-bold text-gray-500 uppercase tracking-widest"
+            class="grid grid-cols-12 px-8 py-6 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-[#30363d] bg-white/[0.01]"
           >
             <div class="col-span-4">Компания</div>
-            <div class="col-span-2">ИНН / Регистрация</div>
-            <div class="col-span-2">Документы</div>
-            <div class="col-span-4 text-right">Действия</div>
+            <div class="col-span-2 text-center">ИНН / Дата</div>
+            <div class="col-span-2 text-center">Документы</div>
+            <div class="col-span-4 text-right">Статус управления</div>
           </div>
 
-          <div
-            v-for="emp in employers"
-            :key="emp.id"
-            class="grid grid-cols-12 px-6 py-5 border-b border-[var(--color-border)] items-center hover:bg-white/[0.02] transition-colors"
-          >
-            <div class="col-span-4 flex items-center gap-4">
-              <div
-                class="w-10 h-10 bg-[var(--color-bg-elevated)] rounded-lg border border-[var(--color-border)] flex items-center justify-center text-lg"
-              >
-                🏢
+          <div class="divide-y divide-[#30363d]">
+            <div
+              v-for="emp in employers"
+              :key="emp.id"
+              class="grid grid-cols-12 px-8 py-5 items-center hover:bg-white/[0.02] transition-colors group"
+            >
+              <div class="col-span-4 flex items-center gap-4">
+                <div
+                  class="w-12 h-12 bg-[#0d1117] rounded-2xl border border-[#30363d] flex items-center justify-center text-xl shadow-lg group-hover:border-mint/50 transition-all"
+                >
+                  🏢
+                </div>
+                <div class="min-w-0">
+                  <p
+                    class="text-sm font-black italic truncate group-hover:text-mint transition-all uppercase tracking-tight"
+                  >
+                    {{ emp.name }}
+                  </p>
+                  <p class="text-[10px] text-gray-500 font-bold truncate opacity-60">
+                    {{ emp.type }}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p class="font-bold text-sm">{{ emp.name }}</p>
-                <p class="text-[10px] text-gray-500">{{ emp.type }}</p>
+
+              <div class="col-span-2 text-center">
+                <p class="text-[11px] font-black italic">{{ emp.inn }}</p>
+                <p class="text-[9px] text-gray-600 font-black uppercase mt-1">{{ emp.date }}</p>
               </div>
-            </div>
-            <div class="col-span-2">
-              <p class="text-xs font-medium">{{ emp.inn }}</p>
-              <p class="text-[10px] text-gray-500">{{ emp.date }}</p>
-            </div>
-            <div class="col-span-2 flex gap-2">
-              <span v-if="emp.docs" class="text-gray-400">📄 📁</span>
-              <span v-else class="text-[10px] text-gray-600 italic">Нет файлов</span>
-            </div>
-            <div class="col-span-4 flex justify-end gap-2">
-              <button
-                class="px-4 py-2 text-[9px] font-bold uppercase border border-[var(--color-border)] rounded-lg hover:border-[var(--color-mint)] transition-colors"
-              >
-                Запросить данные
-              </button>
-              <button
-                class="px-4 py-2 text-[9px] font-bold uppercase text-red-400 hover:bg-red-400/10 rounded-lg"
-              >
-                Отклонить
-              </button>
-              <button
-                class="px-4 py-2 text-[9px] font-bold uppercase bg-[var(--color-mint)] text-[var(--color-bg)] rounded-lg hover:brightness-110"
-              >
-                Верифицировать
-              </button>
+
+              <div class="col-span-2 flex justify-center gap-3">
+                <span
+                  v-if="emp.docs"
+                  class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-xs hover:bg-mint/10 hover:text-mint cursor-pointer transition-all border border-transparent hover:border-mint/20"
+                  >📄</span
+                >
+                <span v-else class="text-[9px] text-gray-700 font-black uppercase italic"
+                  >Пусто</span
+                >
+              </div>
+
+              <div class="col-span-4 flex justify-end gap-2">
+                <button
+                  class="px-4 py-2.5 bg-white/5 border border-[#30363d] rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-white/10 active:scale-95 transition-all"
+                >
+                  Инфо
+                </button>
+                <button
+                  class="px-4 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-500/20 active:scale-95 transition-all"
+                >
+                  Отказ
+                </button>
+                <button
+                  class="px-4 py-2.5 bg-mint text-[#0d1117] rounded-xl text-[9px] font-black uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all shadow-[0_5px_15px_rgba(0,229,160,0.2)]"
+                >
+                  Верифицировать
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Блок ИИ Рекомендации -->
-        <div class="grid grid-cols-3 gap-6">
+        <div class="grid grid-cols-12 gap-6 pb-10">
           <div
-            class="col-span-2 card p-8 bg-gradient-to-br from-[#1c2333] to-[var(--color-bg-card)] border-blue-500/30"
+            class="col-span-12 lg:col-span-8 bg-gradient-to-br from-[#161b22] to-[#1c2333] border border-blue-500/20 p-10 rounded-[3rem] relative overflow-hidden group"
           >
-            <div class="flex items-center gap-3 mb-6">
-              <span class="text-blue-400 text-xl">✨</span>
-              <h3 class="font-bold text-lg">Рекомендация ИИ по верификации</h3>
-            </div>
-            <p class="text-sm text-gray-400 leading-relaxed mb-8">
-              Наша система проанализировала предоставленные ИНН.
-              <span class="text-white font-medium">CyberSphere Solutions</span> и
-              <span class="text-white font-medium">DataFlow Systems</span> имеют высокий рейтинг
-              доверия и действующие государственные контракты. Рекомендуем ускоренную верификацию.
-            </p>
-            <div class="flex gap-10">
-              <div>
-                <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Точность модели</p>
-                <p class="text-2xl font-bold">98.4%</p>
+            <div
+              class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 blur-[120px] opacity-10 group-hover:opacity-20 transition-opacity"
+            ></div>
+            <div class="flex items-center gap-4 mb-8">
+              <div
+                class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)] italic"
+              >
+                ✨
               </div>
+              <h3 class="text-xl font-black italic uppercase tracking-tighter">
+                AI Рекомендации <span class="text-blue-400">Jump.AI</span>
+              </h3>
+            </div>
+            <p class="text-sm text-gray-400 font-medium leading-relaxed mb-10 max-w-2xl">
+              Система проанализировала государственные реестры:
+              <span class="text-white italic font-bold">CyberSphere Solutions</span> имеет
+              действующие госконтракты. Риск фрода:
+              <span class="text-mint font-black tracking-widest">НИЗКИЙ (1.2%)</span>. Рекомендуется
+              автоматическое подтверждение.
+            </p>
+            <div class="flex gap-12">
               <div>
-                <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Флаги риска</p>
-                <p class="text-2xl font-bold text-red-500">0</p>
+                <p class="text-[9px] text-gray-500 font-black uppercase tracking-[0.3em] mb-2">
+                  Точность предикта
+                </p>
+                <p class="text-3xl font-black italic tracking-tighter text-blue-400">98.4%</p>
+              </div>
+              <div class="h-12 w-[1px] bg-white/10 self-end mb-1"></div>
+              <div>
+                <p class="text-[9px] text-gray-500 font-black uppercase tracking-[0.3em] mb-2">
+                  Флаги риска
+                </p>
+                <p class="text-3xl font-black italic tracking-tighter text-red-500">0</p>
               </div>
             </div>
           </div>
 
-          <div class="card p-8 flex flex-col items-center justify-center text-center">
-            <div class="relative w-32 h-32 mb-6">
+          <div
+            class="col-span-12 lg:col-span-4 bg-[#161b22] border border-[#30363d] p-10 rounded-[3rem] flex flex-col items-center justify-center text-center group"
+          >
+            <div
+              class="relative w-40 h-40 mb-8 transition-transform group-hover:scale-105 duration-500"
+            >
               <svg class="w-full h-full transform -rotate-90">
                 <circle
-                  cx="64"
-                  cy="64"
-                  r="60"
-                  stroke="currentColor"
-                  stroke-width="8"
+                  cx="80"
+                  cy="80"
+                  r="75"
+                  stroke="#0d1117"
+                  stroke-width="10"
                   fill="transparent"
-                  class="text-gray-800"
                 />
                 <circle
-                  cx="64"
-                  cy="64"
-                  r="60"
+                  cx="80"
+                  cy="80"
+                  r="75"
                   stroke="currentColor"
-                  stroke-width="8"
+                  stroke-width="10"
                   fill="transparent"
-                  stroke-dasharray="376"
-                  stroke-dashoffset="100"
-                  class="text-[var(--color-mint)]"
+                  stroke-dasharray="471"
+                  stroke-dashoffset="120"
+                  class="text-mint shadow-[0_0_20px_#00e5a0]"
                 />
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-2xl font-bold italic">14м</span>
+                <span class="text-3xl font-black italic tracking-tighter leading-none">14м</span>
+                <span class="text-[8px] text-gray-500 font-black uppercase tracking-[0.2em] mt-1"
+                  >avg speed</span
+                >
               </div>
             </div>
-            <p class="text-xs font-bold mb-1">Скорость модерации</p>
-            <p class="text-[10px] text-gray-500 uppercase">Среднее время сегодня</p>
+            <h4 class="text-xs font-black uppercase tracking-widest italic mb-1">
+              Скорость обработки
+            </h4>
+            <p class="text-[9px] text-gray-600 font-bold uppercase tracking-tighter">
+              Эффективность модераторов сегодня
+            </p>
           </div>
         </div>
       </div>
@@ -278,16 +345,8 @@ const menuItems = [
 </template>
 
 <style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 10px;
-}
-.card {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 1.25rem;
+button,
+.group {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>

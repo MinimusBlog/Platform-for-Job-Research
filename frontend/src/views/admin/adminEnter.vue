@@ -6,25 +6,25 @@ const emit = defineEmits(['close', 'confirm'])
 const form = ref({
   name: '',
   email: '',
-  permissions: []
+  permissions: [],
 })
 
 const roles = [
-  { 
-    id: 'moderation', 
-    title: 'Модерация', 
-    desc: 'Управление контентом и жалобами' 
+  {
+    id: 'moderation',
+    title: 'Модерация',
+    desc: 'Контент и жалобы',
   },
-  { 
-    id: 'users', 
-    title: 'Пользователи', 
-    desc: 'Блокировка и редактирование профилей' 
+  {
+    id: 'users',
+    title: 'Пользователи',
+    desc: 'Управление профилями',
   },
-  { 
-    id: 'analytics', 
-    title: 'Аналитика', 
-    desc: 'Просмотр отчетов и метрик системы' 
-  }
+  {
+    id: 'analytics',
+    title: 'Аналитика',
+    desc: 'Отчеты и метрики',
+  },
 ]
 
 const handleConfirm = () => {
@@ -33,101 +33,134 @@ const handleConfirm = () => {
 </script>
 
 <template>
-  <!-- Телепорт выносит модалку в корень body для правильного наслоения -->
   <Teleport to="body">
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-      
-      <!-- Контейнер модалки с твоим классом .card -->
-      <div class="card w-full max-w-[520px] shadow-2xl shadow-black/80">
-        
-        <!-- Шапка -->
-        <div class="p-8 pb-4 flex justify-between items-start">
-          <div>
-            <h2 class="text-2xl font-black uppercase tracking-tight text-white leading-none">Новый куратор</h2>
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mt-2">Добавление в систему</p>
+    <div
+      class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0d1117]/80 backdrop-blur-xl"
+    >
+      <div
+        class="bg-[#161b22] border border-[#30363d] w-full max-w-[480px] rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] overflow-hidden relative group"
+      >
+        <div
+          class="absolute -top-24 -right-24 w-48 h-48 bg-mint blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity"
+        ></div>
+
+        <div class="p-10 pb-6">
+          <div class="flex justify-between items-start">
+            <div>
+              <h2
+                class="text-3xl font-black italic uppercase tracking-tighter text-white leading-none"
+              >
+                Новый <span class="text-mint">Куратор</span>
+              </h2>
+              <p
+                class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mt-3 opacity-60 text-nowrap"
+              >
+                Регистрация в системе управления
+              </p>
+            </div>
+            <button
+              @click="$emit('close')"
+              class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer text-xl"
+            >
+              &times;
+            </button>
           </div>
-          <button @click="$emit('close')" class="text-gray-500 hover:text-white transition-colors cursor-pointer text-2xl">&times;</button>
         </div>
 
-        <!-- Форма -->
-        <div class="p-8 pt-4 space-y-6">
-          
-          <!-- Инпут: Имя -->
-          <div class="flex flex-col gap-2">
-            <label class="text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500 ml-1">Полное имя</label>
-            <input 
-              v-model="form.name"
-              type="text" 
-              placeholder="Иван Иванов" 
-              class="w-full bg-[#1C2333]/40 border border-border rounded-lg p-4 text-sm focus:border-mint/50 focus:ring-1 focus:ring-mint/20 outline-none transition-all placeholder:text-gray-600"
-            >
+        <div class="px-10 pb-6 space-y-6">
+          <div class="grid grid-cols-1 gap-5">
+            <div class="space-y-2">
+              <label class="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 ml-2"
+                >Имя Фамилия</label
+              >
+              <input
+                v-model="form.name"
+                type="text"
+                placeholder="Иван Иванов"
+                class="w-full bg-[#0d1117] border border-[#30363d] rounded-2xl px-5 py-4 text-sm focus:border-mint/50 outline-none transition-all placeholder:text-gray-700 font-bold"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 ml-2"
+                >Рабочая почта</label
+              >
+              <input
+                v-model="form.email"
+                type="email"
+                placeholder="staff@tramplin.it"
+                class="w-full bg-[#0d1117] border border-[#30363d] rounded-2xl px-5 py-4 text-sm focus:border-mint/50 outline-none transition-all placeholder:text-gray-700 font-bold"
+              />
+            </div>
           </div>
 
-          <!-- Инпут: Email -->
-          <div class="flex flex-col gap-2">
-            <label class="text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500 ml-1">Email адрес</label>
-            <input 
-              v-model="form.email"
-              type="email" 
-              placeholder="example@tramplin.it" 
-              class="w-full bg-[#1C2333]/40 border border-border rounded-lg p-4 text-sm focus:border-mint/50 focus:ring-1 focus:ring-mint/20 outline-none transition-all placeholder:text-gray-600"
-            >
-          </div>
-
-          <!-- Доступы -->
           <div class="space-y-3">
-            <label class="text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500 ml-1">Уровни доступа</label>
-            
-            <label 
-              v-for="role in roles" 
-              :key="role.id"
-              class="flex items-center gap-4 p-4 bg-[#1C2333]/20 border border-border/50 rounded-xl cursor-pointer hover:bg-[#1C2333]/40 transition-all group"
+            <label class="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 ml-2"
+              >Привилегии</label
             >
-              <div class="relative flex items-center">
-                <input 
-                  type="checkbox" 
-                  :value="role.id"
-                  v-model="form.permissions"
-                  class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-border bg-transparent checked:bg-mint checked:border-mint transition-all"
-                >
-                <svg class="absolute h-3.5 w-3.5 pointer-events-none hidden peer-checked:block text-bg left-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div>
-                <div class="text-sm font-bold group-hover:text-white transition-colors">{{ role.title }}</div>
-                <div class="text-[10px] text-gray-500 uppercase tracking-tight">{{ role.desc }}</div>
-              </div>
-            </label>
+
+            <div class="grid grid-cols-1 gap-2">
+              <label
+                v-for="role in roles"
+                :key="role.id"
+                class="flex items-center gap-4 p-4 rounded-[1.5rem] cursor-pointer transition-all border group"
+                :class="
+                  form.permissions.includes(role.id)
+                    ? 'bg-mint/5 border-mint/20 shadow-[inset_0_0_20px_rgba(0,229,160,0.05)]'
+                    : 'bg-[#0d1117] border-[#30363d] hover:border-gray-600'
+                "
+              >
+                <div class="relative flex items-center">
+                  <input
+                    type="checkbox"
+                    :value="role.id"
+                    v-model="form.permissions"
+                    class="peer h-5 w-5 cursor-pointer appearance-none rounded-lg border border-[#30363d] bg-transparent checked:bg-mint checked:border-mint transition-all"
+                  />
+                  <svg
+                    class="absolute h-3 w-3 pointer-events-none hidden peer-checked:block text-[#0d1117] left-1 top-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <div
+                    class="text-[11px] font-black uppercase tracking-widest transition-colors"
+                    :class="form.permissions.includes(role.id) ? 'text-mint' : 'text-gray-300'"
+                  >
+                    {{ role.title }}
+                  </div>
+                  <div
+                    class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter truncate"
+                  >
+                    {{ role.desc }}
+                  </div>
+                </div>
+              </label>
+            </div>
           </div>
         </div>
 
-        <!-- Футер -->
-        <div class="p-8 pt-4 flex items-center gap-8">
-          <button 
+        <div class="p-10 pt-4 flex items-center gap-6">
+          <button
             @click="$emit('close')"
-            class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-colors cursor-pointer"
+            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 hover:text-white transition-colors cursor-pointer"
           >
             Отмена
           </button>
-            <a href="adminmain.vue">
-          <button 
-            @click="handleConfirm"
-            class="btn-primary flex-1 py-4 text-[11px] uppercase tracking-[0.3em]"
-          >
-            Подтвердить
-          </button>
-          </a>
-        </div>
 
+          <button
+            @click="handleConfirm"
+            class="flex-1 py-5 bg-mint text-[#0d1117] rounded-3xl text-[11px] font-black uppercase tracking-[0.3em] hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_10px_20px_rgba(0,229,160,0.15)]"
+          >
+            Сохранить
+          </button>
+        </div>
       </div>
     </div>
   </Teleport>
 </template>
-
-<style scoped>
-/* Дополнительная кастомизация чекбоксов, если стандартных Tailwind не хватит */
-input[type="checkbox"] {
-  border-radius: 4px;
-}
-</style>
