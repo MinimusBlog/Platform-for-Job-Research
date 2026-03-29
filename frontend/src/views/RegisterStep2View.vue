@@ -208,7 +208,9 @@ const form = reactive({
 const goBack = () => router.push('/register')
 
 const handleSubmit = () => {
+  // После успешной регистрации — на страницу входа
   console.log('form submitted', { role, ...form })
+  router.push('/login')
 }
 </script>
 

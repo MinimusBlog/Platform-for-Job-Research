@@ -14,8 +14,8 @@
         </p>
 
         <div class="hero-buttons">
-          <button class="btn-primary">Найти стажировку →</button>
-          <button class="btn-outline">Я работодатель</button>
+          <router-link to="/register" class="btn-primary">Войти</router-link>
+          <router-link to="/register" class="btn-outline">Регистрация</router-link>
         </div>
 
         <div class="companies">

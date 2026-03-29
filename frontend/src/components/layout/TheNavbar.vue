@@ -13,13 +13,39 @@
       <a href="#" class="nav-link">База знаний</a>
     </div>
 
-    <RouterLink to="/register" class="btn-login">Войти</RouterLink>
+    <!-- Навигация для авторизованных пользователей -->
+    <div v-if="authStore.isAuthenticated" class="user-nav">
+      <span class="user-name">{{ authStore.user.name }}</span>
+      <RouterLink v-if="authStore.isAdmin" to="/admin/main" class="nav-link admin-link"
+        >Админка</RouterLink
+      >
+      <RouterLink v-else-if="authStore.isApplicant" to="/applicant" class="nav-link"
+        >Профиль</RouterLink
+      >
+      <RouterLink v-else-if="authStore.isEmployer" to="/company/dashboard" class="nav-link"
+        >Компания</RouterLink
+      >
+      <button @click="handleLogout" class="btn-logout">Выйти</button>
+    </div>
+
+    <!-- Навигация для неавторизованных пользователей -->
+    <RouterLink v-else to="/register" class="btn-login">Войти</RouterLink>
   </nav>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../../stores/auth'
+
+const router = useRouter()
+const authStore = useAuthStore()
 const menuOpen = ref(false)
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/')
+}
 </script>
 
 <style scoped>
@@ -157,6 +183,38 @@ const menuOpen = ref(false)
     &.open {
       display: flex;
     }
+  }
+}
+
+.user-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-name {
+  color: white;
+  font-weight: 500;
+}
+
+.admin-link {
+  color: var(--color-mint) !important;
+  font-weight: 600;
+}
+
+.btn-logout {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--color-border);
+    border-color: var(--color-mint);
   }
 }
 </style>

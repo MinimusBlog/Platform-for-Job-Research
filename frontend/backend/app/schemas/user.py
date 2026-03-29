@@ -1,27 +1,20 @@
-"""Pydantic schemas for user profiles."""
-
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
-
-
-class UserBase(BaseModel):
+class UserCreate(BaseModel):
     email: EmailStr
-    full_name: Optional[str] = None
-
-
-class UserCreate(UserBase):
     password: str
+    role: str
 
-
-class UserUpdate(BaseModel):
-    full_name: Optional[str] = None
-    is_active: Optional[bool] = None
-
-
-class UserResponse(UserBase):
+class UserResponse(BaseModel):
     id: int
-    is_active: bool
+    email: EmailStr
+    role: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    role: str

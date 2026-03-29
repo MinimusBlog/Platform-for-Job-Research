@@ -1,45 +1,88 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+// Общие страницы
 import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import RegisterStep2View from '../views/RegisterStep2View.vue'
-import ApplicantView from '../views/applicant.vue'
-import ApplicantNetworkView from '../views/applicantnetwork.vue'
-import ApplicantProfileView from '../views/applicantprofile.vue'
+
+// Соискатель
+import ApplicantView from '../views/applicant/applicant.vue'
+import ApplicantNetworkView from '../views/applicant/applicantnetwork.vue'
+import ApplicantProfileView from '../views/applicant/applicantprofile.vue'
+
+// Админка
+import AdminMain from '../views/admin/adminMain.vue'
+import AdminUsers from '../views/admin/adminUsers.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: RegisterView,
-    },
-    {
-      path: '/register/step2',
-      name: 'register-step2',
-      component: RegisterStep2View,
-    },
+    // Общие
+    { path: '/', name: 'home', component: HomeView },
+    { path: '/login', name: 'login', component: LoginView },
+    { path: '/register', name: 'register', component: RegisterView },
+    { path: '/register/step2', name: 'register-step2', component: RegisterStep2View },
+
+    // Раздел СОИСКАТЕЛЯ
     {
       path: '/applicant',
-      name: 'applicant',
-      component: ApplicantView,
+      meta: { requiresAuth: true },
+      children: [
+        { path: '', name: 'applicant', component: ApplicantView },
+        { path: 'profile', name: 'applicant-profile', component: ApplicantProfileView },
+        { path: 'network', name: 'applicant-network', component: ApplicantNetworkView },
+      ],
     },
+
+    // Раздел РАБОТОДАТЕЛЯ
     {
-      path: '/applicant/profile',
-      name: 'applicant-profile',
-      component: ApplicantProfileView,
+      path: '/company',
+      meta: { requiresAuth: true, requiresEmployer: true },
+      children: [
+        {
+          path: 'dashboard',
+          name: 'company-dashboard',
+          component: () => import('../views/Company/companyVouke.vue'),
+        },
+      ],
     },
+
+    // Раздел АДМИНА
     {
-      path: '/applicant/network',
-      name: 'applicant-network',
-      component: ApplicantNetworkView,
+      path: '/admin',
+      meta: { requiresAuth: true, requiresAdmin: true },
+      children: [
+        { path: 'main', name: 'admin-main', component: AdminMain },
+        { path: 'users', name: 'admin-users', component: AdminUsers },
+      ],
     },
   ],
+})
+
+// Guard для защиты маршрутов
+router.beforeEach((to) => {
+  const authStore = useAuthStore()
+  authStore.checkAuth()
+
+  const isAuthenticated = authStore.isAuthenticated
+  const userRole = authStore.user?.role
+
+  // Требуется авторизация
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return { name: 'login' }
+  }
+
+  // Требуется роль админа
+  if (to.meta.requiresAdmin && userRole !== 'admin') {
+    return { name: 'home' }
+  }
+
+  // Требуется роль работодателя
+  if (to.meta.requiresEmployer && userRole !== 'employer') {
+    return { name: 'home' }
+  }
 })
 
 export default router

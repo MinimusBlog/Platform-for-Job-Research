@@ -8,17 +8,19 @@
 }
 
 @source "../src";
+/* src/assets/main.css */
+
 @theme {
-    --color-mint: #00E5A0;
-    --color-mint-dark: #00C584;
-    --color-mint-dim: rgba(0, 229, 160, 0.08);
+    --color-mint: #00e5a0;
+    --color-mint-dark: #00b894;
+    --color-mint-dim: rgba(0, 229, 160, 0.1);
 
-    --color-bg: #0D1117;
-    --color-bg-card: #161B22;
-    --color-bg-elevated: #1C2333;
+    --color-bg: #0d1117;
+    --color-bg-card: #161b22;
+    --color-bg-elevated: #21262d;
 
-    --color-border: #30363D;
-    --color-border-light: #444C56;
+    --color-border: #30363d;
+    --color-muted: #8b949e;
 }
 
 @layer base {
