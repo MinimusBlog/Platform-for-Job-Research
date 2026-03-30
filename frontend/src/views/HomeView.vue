@@ -2,415 +2,814 @@
   <div class="container">
     <TheNavbar />
 
-    <section class="hero">
-      <div class="hero-left">
-        <span class="badge">LEVEL UP YOUR CAREER</span>
-        <h1 class="hero-title">Запусти<br />карьеру в IT</h1>
+    <main class="main">
+      <section class="hero card">
+        <div>
+          <span class="label">ВАКАНСИИ И КАРТА</span>
+          <h1>Лента IT-вакансий</h1>
+          <p>Изучите вакансии на карте и в таблице. Для отклика зарегистрируйтесь в системе.</p>
+        </div>
+        <router-link to="/register" class="btn-register">Перейти к регистрации</router-link>
+      </section>
 
-        <div class="accent-line"></div>
-
-        <p class="hero-subtitle">
-          Лучшие стажировки и вакансии для начинающих специалистов от ведущих IT-компаний страны.
-        </p>
-
-        <div class="hero-buttons">
-          <router-link to="/register" class="btn-primary">Войти</router-link>
-          <router-link to="/register" class="btn-outline">Регистрация</router-link>
+      <section class="filters-panel card">
+        <div class="search-row">
+          <input
+            v-model.trim="searchQuery"
+            class="search-input"
+            type="text"
+            placeholder="Поиск по компании, вакансии, городу или тегу"
+          />
+          <button
+            type="button"
+            class="favorites-toggle"
+            :class="{ active: onlyFavorites }"
+            @click="onlyFavorites = !onlyFavorites"
+          >
+            {{ onlyFavorites ? 'Только избранное: ВКЛ' : 'Только избранное' }}
+          </button>
+          <span class="results-count">Найдено: {{ filteredJobs.length }}</span>
         </div>
 
-        <div class="companies">
-          <p class="companies-label">НАМ ДОВЕРЯЮТ ЛУЧШИЕ</p>
-          <div class="companies-logos">
-            <div class="company-logo">Яндекс</div>
-            <div class="company-logo">VK</div>
-            <div class="company-logo">Сбер</div>
-            <div class="company-logo">Тинькофф</div>
+        <div class="filters-row">
+          <div class="filter-group">
+            <span class="filter-label">Формат</span>
+            <button
+              v-for="format in availableFormats"
+              :key="format"
+              type="button"
+              class="chip"
+              :class="{ active: selectedFormats.includes(format) }"
+              @click="toggleArrayValue(selectedFormats, format)"
+            >
+              {{ format }}
+            </button>
+          </div>
+
+          <div class="filter-group">
+            <span class="filter-label">Уровень</span>
+            <button
+              v-for="level in availableLevels"
+              :key="level"
+              type="button"
+              class="chip"
+              :class="{ active: selectedLevels.includes(level) }"
+              @click="toggleArrayValue(selectedLevels, level)"
+            >
+              {{ level }}
+            </button>
           </div>
         </div>
-      </div>
 
-      <div class="hero-right">
-        <div class="stat-card">
-          <div class="stat-icon">🚀</div>
-          <div>
-            <div class="stat-number">1,240+</div>
-            <div class="stat-label">Активных стажировок</div>
-          </div>
+        <div class="filter-group tags-group">
+          <span class="filter-label">Теги</span>
+          <button
+            v-for="tag in availableTags"
+            :key="tag"
+            type="button"
+            class="chip"
+            :class="{ active: selectedTags.includes(tag) }"
+            @click="toggleArrayValue(selectedTags, tag)"
+          >
+            {{ tag }}
+          </button>
+        </div>
+      </section>
+
+      <section class="map-section card">
+        <div class="map-head">
+          <h2>Интерактивная карта</h2>
+          <p>Кликните по точке, чтобы открыть модульную карточку вакансии.</p>
         </div>
 
-        <div class="feature-cards">
-          <div class="feature-card">
-            <div class="feature-icon">💼</div>
-            <div>
-              <div class="feature-title">Прямой путь в BigTech</div>
-              <div class="feature-desc">Сотрудничаем напрямую с HR-департаментами</div>
+        <div class="map-canvas">
+          <svg class="city-map" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="0" y="0" width="1000" height="520" class="map-bg" />
+            <g class="roads-minor">
+              <path d="M0 70 L1000 70" />
+              <path d="M0 130 L1000 130" />
+              <path d="M0 190 L1000 190" />
+              <path d="M0 250 L1000 250" />
+              <path d="M0 310 L1000 310" />
+              <path d="M0 370 L1000 370" />
+              <path d="M0 430 L1000 430" />
+              <path d="M80 0 L80 520" />
+              <path d="M180 0 L180 520" />
+              <path d="M280 0 L280 520" />
+              <path d="M380 0 L380 520" />
+              <path d="M480 0 L480 520" />
+              <path d="M580 0 L580 520" />
+              <path d="M680 0 L680 520" />
+              <path d="M780 0 L780 520" />
+              <path d="M880 0 L880 520" />
+            </g>
+
+            <g class="roads-ring">
+              <ellipse cx="500" cy="260" rx="120" ry="80" />
+              <ellipse cx="500" cy="260" rx="190" ry="125" />
+              <ellipse cx="500" cy="260" rx="270" ry="180" />
+              <ellipse cx="500" cy="260" rx="360" ry="235" />
+            </g>
+
+            <g class="roads-radial">
+              <line x1="500" y1="260" x2="500" y2="15" />
+              <line x1="500" y1="260" x2="740" y2="90" />
+              <line x1="500" y1="260" x2="950" y2="260" />
+              <line x1="500" y1="260" x2="740" y2="430" />
+              <line x1="500" y1="260" x2="500" y2="500" />
+              <line x1="500" y1="260" x2="260" y2="430" />
+              <line x1="500" y1="260" x2="50" y2="260" />
+              <line x1="500" y1="260" x2="260" y2="90" />
+            </g>
+          </svg>
+
+          <button
+            v-for="point in mapJobs"
+            :key="`map-${point.id}`"
+            type="button"
+            class="map-pin"
+            :class="{ active: selectedMapJob?.id === point.id, favorite: isVacancyFavorite(point.id) }"
+            :style="{ left: `${point.x}%`, top: `${point.y}%` }"
+            @click="selectMapJob(point)"
+          >
+            <span>{{ point.id }}</span>
+          </button>
+
+          <div v-if="selectedMapJob" class="map-module-card">
+            <div class="module-top">
+              <div class="module-dot"></div>
+              <span>{{ selectedMapJob.company }}</span>
             </div>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon feature-icon--ai">AI</div>
-            <div>
-              <div class="feature-title">Умный подбор</div>
-              <div class="feature-desc">Алгоритм подберёт вакансии по твоему стеку</div>
+            <h3>{{ selectedMapJob.title }}</h3>
+            <p>{{ selectedMapJob.location }} • {{ selectedMapJob.salary }}</p>
+            <div class="module-tags">
+              <span v-for="tag in selectedMapJob.tags.slice(0, 3)" :key="tag">{{ tag }}</span>
             </div>
+            <div class="module-favorites">
+              <button type="button" class="fav-btn" @click="toggleCompanyFavorite(selectedMapJob.company)">
+                {{ isCompanyFavorite(selectedMapJob.company) ? '★ Компания в избранном' : '☆ В избранное компанию' }}
+              </button>
+              <button type="button" class="fav-btn" @click="toggleVacancyFavorite(selectedMapJob.id)">
+                {{ isVacancyFavorite(selectedMapJob.id) ? '★ Вакансия в избранном' : '☆ В избранное вакансию' }}
+              </button>
+            </div>
+            <button type="button" class="module-btn" @click="openFromLanding(selectedMapJob.id)">
+              {{ authStore.isAuthenticated ? 'Открыть вакансию' : 'Зарегистрироваться' }}
+            </button>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section class="table-container card">
+        <table class="apps-table">
+          <thead>
+            <tr>
+              <th>КОМПАНИЯ</th>
+              <th>ДОЛЖНОСТЬ</th>
+              <th>ФОРМАТ</th>
+              <th>УРОВЕНЬ</th>
+              <th>СТЕК</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="job in filteredJobs"
+              :key="job.id"
+              class="job-row"
+              role="button"
+              tabindex="0"
+              @click="openFromLanding(job.id)"
+              @keydown.enter="openFromLanding(job.id)"
+            >
+              <td>
+                <div class="company-cell">
+                  <div class="company-logo" :style="{ backgroundColor: job.logoBg }">
+                    {{ job.logo }}
+                  </div>
+                  <span>{{ job.company }}</span>
+                  <button
+                    type="button"
+                    class="inline-fav"
+                    :class="{ active: isCompanyFavorite(job.company) }"
+                    title="Добавить компанию в избранное"
+                    @click.stop="toggleCompanyFavorite(job.company)"
+                  >
+                    {{ isCompanyFavorite(job.company) ? '★' : '☆' }}
+                  </button>
+                </div>
+              </td>
+              <td>
+                <div class="job-title">
+                  {{ job.title }}
+                  <button
+                    type="button"
+                    class="inline-fav"
+                    :class="{ active: isVacancyFavorite(job.id) }"
+                    title="Добавить вакансию в избранное"
+                    @click.stop="toggleVacancyFavorite(job.id)"
+                  >
+                    {{ isVacancyFavorite(job.id) ? '★' : '☆' }}
+                  </button>
+                </div>
+                <div class="job-meta">{{ job.location }} • {{ job.salary }}</div>
+              </td>
+              <td>
+                <span class="badge" :class="job.format === 'Remote' ? 'badge-remote' : 'badge-hybrid'">
+                  {{ job.format }}
+                </span>
+              </td>
+              <td>
+                <span class="badge badge-level">{{ job.level }}</span>
+              </td>
+              <td>
+                <div class="stack-cell">
+                  <span v-for="tag in job.tags" :key="tag" class="tag">{{ tag }}</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
   </div>
 </template>
 
 <script setup>
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import TheNavbar from '@/components/layout/TheNavbar.vue'
+import { useAuthStore } from '@/stores/auth'
+import { applicantJobs } from '@/data/applicantJobs'
+
+const router = useRouter()
+const authStore = useAuthStore()
+const jobs = applicantJobs
+const searchQuery = ref('')
+const selectedFormats = ref([])
+const selectedLevels = ref([])
+const selectedTags = ref([])
+const onlyFavorites = ref(false)
+const favoriteCompanies = ref([])
+const favoriteVacancyIds = ref([])
+
+const FAVORITE_COMPANIES_KEY = 'favorite_companies'
+const FAVORITE_VACANCIES_KEY = 'favorite_vacancies'
+
+try {
+  const savedCompanies = JSON.parse(localStorage.getItem(FAVORITE_COMPANIES_KEY) || '[]')
+  const savedVacancies = JSON.parse(localStorage.getItem(FAVORITE_VACANCIES_KEY) || '[]')
+  if (Array.isArray(savedCompanies)) favoriteCompanies.value = savedCompanies
+  if (Array.isArray(savedVacancies)) favoriteVacancyIds.value = savedVacancies
+} catch (_e) {
+  favoriteCompanies.value = []
+  favoriteVacancyIds.value = []
+}
+
+const availableFormats = computed(() => [...new Set(jobs.map((job) => job.format))])
+const availableLevels = computed(() => [...new Set(jobs.map((job) => job.level))])
+const availableTags = computed(() => [...new Set(jobs.flatMap((job) => job.tags))])
+
+const filteredJobs = computed(() => {
+  const q = searchQuery.value.toLowerCase()
+  return jobs.filter((job) => {
+    const searchable = `${job.company} ${job.title} ${job.location} ${job.tags.join(' ')}`.toLowerCase()
+    const byText = !q || searchable.includes(q)
+    const byFormat = !selectedFormats.value.length || selectedFormats.value.includes(job.format)
+    const byLevel = !selectedLevels.value.length || selectedLevels.value.includes(job.level)
+    const byTags =
+      !selectedTags.value.length ||
+      selectedTags.value.some((tag) => job.tags.includes(tag))
+    const byFavorites =
+      !onlyFavorites.value ||
+      favoriteVacancyIds.value.includes(job.id) ||
+      favoriteCompanies.value.includes(job.company)
+    return byText && byFormat && byLevel && byTags && byFavorites
+  })
+})
+
+const mapCoords = {
+  1: { x: 44, y: 33 },
+  2: { x: 31, y: 28 },
+  3: { x: 58, y: 39 },
+  4: { x: 68, y: 47 },
+  5: { x: 24, y: 53 },
+  6: { x: 52, y: 55 },
+  7: { x: 74, y: 31 },
+  8: { x: 40, y: 44 },
+  9: { x: 17, y: 39 },
+  10: { x: 62, y: 24 },
+}
+const mapJobs = computed(() =>
+  filteredJobs.value.map((job) => ({
+    ...job,
+    x: mapCoords[job.id]?.x ?? 50,
+    y: mapCoords[job.id]?.y ?? 50,
+  })),
+)
+const selectedMapJob = ref(mapJobs.value[0] || null)
+
+const selectMapJob = (job) => {
+  selectedMapJob.value = job
+}
+
+watch(mapJobs, (next) => {
+  if (!next.length) {
+    selectedMapJob.value = null
+    return
+  }
+  const selectedId = selectedMapJob.value?.id
+  selectedMapJob.value = next.find((job) => job.id === selectedId) || next[0]
+})
+
+const toggleArrayValue = (targetRef, value) => {
+  targetRef.value = targetRef.value.includes(value)
+    ? targetRef.value.filter((item) => item !== value)
+    : [...targetRef.value, value]
+}
+
+const isCompanyFavorite = (companyName) => favoriteCompanies.value.includes(companyName)
+const isVacancyFavorite = (vacancyId) => favoriteVacancyIds.value.includes(vacancyId)
+
+const saveFavorites = () => {
+  localStorage.setItem(FAVORITE_COMPANIES_KEY, JSON.stringify(favoriteCompanies.value))
+  localStorage.setItem(FAVORITE_VACANCIES_KEY, JSON.stringify(favoriteVacancyIds.value))
+}
+
+const toggleCompanyFavorite = (companyName) => {
+  favoriteCompanies.value = isCompanyFavorite(companyName)
+    ? favoriteCompanies.value.filter((name) => name !== companyName)
+    : [...favoriteCompanies.value, companyName]
+  saveFavorites()
+}
+
+const toggleVacancyFavorite = (vacancyId) => {
+  favoriteVacancyIds.value = isVacancyFavorite(vacancyId)
+    ? favoriteVacancyIds.value.filter((id) => id !== vacancyId)
+    : [...favoriteVacancyIds.value, vacancyId]
+  saveFavorites()
+}
+
+const openFromLanding = (jobId) => {
+  if (!authStore.isAuthenticated) {
+    router.push({ name: 'register' })
+    return
+  }
+  router.push({ name: 'applicant-job-details', params: { id: jobId } })
+}
 </script>
 
 <style scoped>
-body {
-  background: var(--color-bg);
-}
-
 .container {
-  display: grid;
-  grid-template-rows: auto 1fr;
   min-height: 100vh;
-  max-width: 1440px;
+  background: var(--color-bg);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.main {
+  max-width: 1200px;
   margin: 0 auto;
-  font-family: 'Montserrat', sans-serif;
+  padding: 28px 20px 40px;
 }
 
-.feature-icon--ai {
-  background: rgba(99, 102, 241, 0.15);
-  color: #818cf8;
-}
-
-/* ── Hero: grid из двух колонок ── */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  align-items: center;
-  gap: 60px;
-  padding: 40px 60px;
-}
-
-.hero-left {
-  display: flex;
-  flex-direction: column;
-  max-width: 520px;
-}
-
-.badge {
-  font-size: 11px;
-  border: 1px solid var(--color-border);
-  border-radius: 25px;
-  padding: 6px 16px;
-  color: #6b7280;
-  letter-spacing: 2px;
-  display: inline-block;
-  margin-bottom: 28px;
-  align-self: flex-start;
-}
-
-.hero-title {
-  font-size: 72px;
-  font-weight: 900;
-  line-height: 1.05;
-  margin-bottom: 24px;
-  color: white;
-}
-
-.accent-line {
-  width: 60px;
-  height: 3px;
-  background: var(--color-mint);
-  margin-bottom: 24px;
-  border-radius: 2px;
-}
-
-.hero-subtitle {
-  color: #9ca3af;
-  font-size: 17px;
-  line-height: 1.7;
-  margin-bottom: 40px;
-}
-
-.hero-buttons {
-  display: flex;
-  gap: 16px;
-}
-
-.btn-primary {
-  background: var(--color-mint);
-  color: #0d1117;
-  font-weight: 700;
-  padding: 16px 36px;
-  border-radius: 25px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
-  transition:
-    background 0.2s,
-    transform 0.15s,
-    box-shadow 0.2s;
-
-  &:hover {
-    background: var(--color-mint-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 229, 160, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: white;
-  font-weight: 700;
-  padding: 16px 36px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
-  transition:
-    border-color 0.2s,
-    color 0.2s,
-    background 0.2s,
-    transform 0.15s;
-
-  &:hover {
-    border-color: var(--color-mint);
-    color: var(--color-mint);
-    background: var(--color-mint-dim);
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-.companies {
-  margin-top: 48px;
-}
-
-.companies-label {
-  font-size: 10px;
-  color: #4b5563;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
-}
-
-.companies-logos {
-  display: flex;
-  gap: 16px;
-}
-
-.company-logo {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 8px 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7280;
-  transition:
-    border-color 0.2s,
-    color 0.2s;
-
-  &:hover {
-    border-color: var(--color-mint);
-    color: white;
-  }
-}
-
-/* ── Правая часть: grid карточек ── */
-.hero-right {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 16px;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+.card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  padding: 28px 32px;
-  transition:
-    border-color 0.2s,
-    transform 0.2s;
-
-  &:hover {
-    border-color: var(--color-mint);
-    transform: translateY(-3px);
-  }
 }
 
-.stat-icon {
+.filters-panel {
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.search-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  background: var(--color-mint-dim);
-  border-radius: 12px;
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.stat-number {
-  font-size: 34px;
-  font-weight: 800;
-  color: var(--color-mint);
-}
-
-.stat-label {
-  font-size: 11px;
-  color: #6b7280;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-top: 6px;
-}
-
-.feature-cards {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
   gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.feature-card {
+.search-input {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid var(--color-border);
+  color: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.results-count {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.favorites-toggle {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: transparent;
+  color: #cbd5e1;
+  padding: 10px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.favorites-toggle.active {
+  border-color: rgba(250, 204, 21, 0.7);
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.1);
+}
+
+.filters-row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  padding: 20px 24px;
-  transition:
-    border-color 0.2s,
-    transform 0.2s;
-
-  &:hover {
-    border-color: var(--color-border-light);
-    transform: translateY(-2px);
-  }
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.feature-icon {
+.filter-label {
+  color: #9ca3af;
+  font-size: 12px;
+  margin-right: 6px;
+}
+
+.tags-group {
+  margin-top: 10px;
+}
+
+.chip {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.chip.active {
+  border-color: var(--color-mint);
+  color: var(--color-mint);
+  background: var(--color-mint-dim);
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.label {
+  color: var(--color-mint);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  margin: 6px 0 8px;
+  font-size: 32px;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.btn-register {
+  background: var(--color-mint);
+  color: #0d1117;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 12px 18px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.map-section {
+  margin-bottom: 20px;
+  padding: 18px;
+}
+
+.map-head {
+  margin-bottom: 12px;
+}
+
+.map-head h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.map-head p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.map-canvas {
+  position: relative;
+  min-height: 360px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+  background: #0b0f15;
+}
+
+.city-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.95;
+}
+
+.map-bg {
+  fill: #090d13;
+}
+
+.roads-minor path {
+  stroke: rgba(148, 163, 184, 0.08);
+  stroke-width: 1.1;
+}
+
+.roads-ring ellipse {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.45);
+  stroke-width: 2.2;
+}
+
+.roads-radial line {
+  stroke: rgba(148, 163, 184, 0.34);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(16, 185, 129, 0.95);
+  color: #041012;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 3px rgba(16, 185, 129, 0.18),
+    0 0 20px rgba(16, 185, 129, 0.45);
+  transition: transform 0.2s ease;
+}
+
+.map-pin:hover,
+.map-pin.active {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.map-pin.favorite {
+  background: #facc15;
+  color: #1f2937;
+  box-shadow:
+    0 0 0 3px rgba(250, 204, 21, 0.18),
+    0 0 18px rgba(250, 204, 21, 0.5);
+}
+
+.map-module-card {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 280px;
+  border-radius: 14px;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  background: rgba(11, 18, 32, 0.92);
+  backdrop-filter: blur(6px);
+  padding: 14px;
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.55);
+}
+
+.module-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a7f3d0;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.module-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+}
+
+.map-module-card h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.map-module-card p {
+  margin: 0 0 10px;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.module-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.module-tags span {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.module-btn {
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  background: #10b981;
+  color: #052617;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.module-favorites {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.fav-btn {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: #cbd5e1;
+  padding: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.table-container {
+  overflow: hidden;
+}
+
+.apps-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.apps-table th {
+  text-align: left;
+  padding: 20px;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.apps-table td {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.apps-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.job-row {
+  cursor: pointer;
+}
+
+.job-row:focus-visible {
+  outline: 2px solid var(--color-mint);
+  outline-offset: -2px;
+}
+
+.company-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.company-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  background: var(--color-mint-dim);
-  color: var(--color-mint);
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: 800;
-  flex-shrink: 0;
+  font-size: 16px;
 }
 
-.feature-title {
-  font-size: 14px;
+.job-title {
   font-weight: 700;
-  color: white;
-  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.feature-desc {
+.job-meta {
+  color: var(--text-muted);
   font-size: 12px;
-  color: #6b7280;
-  line-height: 1.5;
+  margin-top: 4px;
 }
 
-/* ── Адаптив ── */
-@media (max-width: 1024px) {
+.stack-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.inline-fav {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 6px;
+  background: transparent;
+  color: #cbd5e1;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.inline-fav.active {
+  color: #facc15;
+  border-color: rgba(250, 204, 21, 0.6);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  border: 1px solid var(--color-border);
+  color: #e5e7eb;
+}
+
+.badge-remote {
+  border-color: rgba(79, 209, 197, 0.35);
+  color: var(--color-mint);
+  background: var(--color-mint-dim);
+}
+
+.badge-hybrid {
+  border-color: rgba(148, 163, 184, 0.25);
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.badge-level {
+  border-color: rgba(129, 140, 248, 0.35);
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.12);
+}
+
+@media (max-width: 900px) {
   .hero {
-    grid-template-columns: 1fr;
-    padding: 60px 40px;
-  }
-
-  .hero-right {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-
-  .feature-cards {
-    grid-template-rows: auto;
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      'logo burger'
-      'links links';
-    padding: 16px 24px;
-    gap: 0;
-  }
-
-  .logo {
-    grid-area: logo;
-  }
-  .burger {
-    grid-area: burger;
-    display: flex;
-  }
-  .btn-login {
-    display: inline-block;
-    text-decoration: none;
-  }
-
-  .nav-links {
-    grid-area: links;
-    display: none;
     flex-direction: column;
-    gap: 16px;
-    padding: 16px 0;
-    border-top: 1px solid var(--color-border);
-    margin-top: 16px;
-
-    &.open {
-      display: flex;
-    }
+    align-items: flex-start;
   }
 
-  .hero {
-    padding: 40px 24px;
-  }
-
-  .hero-title {
-    font-size: 48px;
-  }
-
-  .hero-right {
-    grid-template-columns: 1fr;
-  }
-
-  .feature-cards {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 38px;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-  }
-
-  .btn-primary,
-  .btn-outline {
-    text-align: center;
+  .map-module-card {
+    position: static;
+    width: 100%;
+    margin-top: 12px;
   }
 }
 </style>
