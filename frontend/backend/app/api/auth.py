@@ -25,7 +25,6 @@ async def register(user_in: UserCreate):
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = fake_users_db.get(form_data.username)
-    # Здесь должна быть проверка пароля через verify_password
     
     token = create_access_token({"sub": user["email"], "role": user["role"]})
     return {"access_token": token, "token_type": "bearer", "role": user["role"]}
