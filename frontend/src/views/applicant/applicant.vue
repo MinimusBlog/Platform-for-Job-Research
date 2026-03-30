@@ -17,6 +17,14 @@
 
       <nav class="side-nav">
         <router-link
+          :to="{ name: 'applicant-jobs' }"
+          class="nav-item"
+          :class="{ active: activeNav === 'jobs' }"
+        >
+          <span>🔎</span> ПОИСК ВАКАНСИЙ
+        </router-link>
+
+        <router-link
           :to="{ name: 'applicant-profile' }"
           class="nav-item"
           :class="{ active: activeNav === 'profile' }"
@@ -141,6 +149,8 @@
 
 <script setup>
 import { ref } from 'vue'
+
+const activeNav = 'applications'
 
 const applications = ref([
   {
