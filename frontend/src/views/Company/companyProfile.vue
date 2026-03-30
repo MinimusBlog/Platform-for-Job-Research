@@ -1,6 +1,5 @@
 <template>
   <div class="admin-panel">
-    <!-- Шапка (Top Navigation) -->
     <header class="header">
       <div class="header-left">
         <div class="logo">ТРАМПЛИН</div>
@@ -11,10 +10,16 @@
         </div>
       </div>
       <nav class="nav-links">
-        <a href="#" class="active">Компания</a>
-        <a href="companichans.vue">Возможности</a>
-        <a href="companivouke.vue">Отклики</a>
-        <a href="#">Аналитика</a>
+        <router-link :to="{ name: 'company-profile' }" active-class="active">
+          Компания
+        </router-link>
+        <router-link :to="{ name: 'company-opportunities' }" active-class="active">
+          Возможности
+        </router-link>
+        <router-link :to="{ name: 'company-responses' }" active-class="active">
+          Отклики
+        </router-link>
+        <a href="#" class="hover:text-white transition-all">Аналитика</a>
       </nav>
       <div class="header-right">
         <button class="icon-btn">🔔</button>
@@ -55,7 +60,7 @@
           <div class="row">
             <div class="input-group">
               <label>НАЗВАНИЕ КОМПАНИИ</label>
-              <input type="text" value="Quantum Systems" class="dark-input">
+              <input type="text" value="Quantum Systems" class="dark-input" />
             </div>
             <div class="input-group">
               <label>ИНДУСТРИЯ</label>
@@ -69,7 +74,9 @@
 
           <div class="input-group">
             <label>О КОМПАНИИ</label>
-            <textarea class="dark-input" rows="4">Quantum Systems — лидер в разработке высоконагруженных финтех-платформ. Мы создаем будущее распределенных вычислений для глобальных рынков капитала.</textarea>
+            <textarea class="dark-input" rows="4">
+Quantum Systems — лидер в разработке высоконагруженных финтех-платформ. Мы создаем будущее распределенных вычислений для глобальных рынков капитала.</textarea
+            >
           </div>
 
           <div class="row">
@@ -77,14 +84,14 @@
               <label>САЙТ</label>
               <div class="input-wrapper">
                 <span class="prefix">🌐</span>
-                <input type="text" value="https://quantum-systems.io">
+                <input type="text" value="https://quantum-systems.io" />
               </div>
             </div>
             <div class="input-group">
               <label>LINKEDIN</label>
               <div class="input-wrapper">
                 <span class="prefix">🔗</span>
-                <input type="text" value="linkedin.com/company/quantum-system">
+                <input type="text" value="linkedin.com/company/quantum-system" />
               </div>
             </div>
           </div>
@@ -137,9 +144,9 @@
 
           <!-- Совет -->
           <div class="tip-box">
-             <span class="tip-icon">💡</span>
-             <h5>Совет по брендингу</h5>
-             <p>Компании с заполненным описанием получают на 45% больше качественных откликов.</p>
+            <span class="tip-icon">💡</span>
+            <h5>Совет по брендингу</h5>
+            <p>Компании с заполненным описанием получают на 45% больше качественных откликов.</p>
           </div>
         </aside>
       </div>
@@ -171,18 +178,18 @@
   gap: 24px;
 }
 
-.logo { 
-  font-weight: 900; 
-  font-size: 1.2rem; 
-  color: var(--color-mint); 
-  letter-spacing: -0.5px; 
+.logo {
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: var(--color-mint);
+  letter-spacing: -0.5px;
 }
 
-.company-badge { 
-  display: flex; 
-  align-items: center; 
+.company-badge {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  font-size: 0.8rem; 
+  font-size: 0.8rem;
   color: var(--text-muted);
   background: var(--color-bg);
   padding: 6px 12px;
@@ -208,14 +215,14 @@
   color: var(--color-mint);
 }
 
-.nav-links { 
+.nav-links {
   display: flex;
   gap: 32px;
 }
 
-.nav-links a { 
-  text-decoration: none; 
-  color: var(--text-muted); 
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 600;
   transition: color 0.2s;
@@ -226,9 +233,9 @@
   color: white;
 }
 
-.nav-links a.active { 
-  color: white; 
-  border-bottom: 2px solid var(--color-mint); 
+.nav-links a.active {
+  color: white;
+  border-bottom: 2px solid var(--color-mint);
 }
 
 .header-right {
@@ -267,10 +274,10 @@
 }
 
 /* Main Content */
-.container { 
-  max-width: 1200px; 
-  margin: 0 auto; 
-  padding: 40px 20px; 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
 .banner-success {
@@ -388,11 +395,11 @@
   color: var(--text-muted);
 }
 
-.row { 
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  gap: 20px; 
-  margin-bottom: 25px; 
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
 }
 
 .input-group {
@@ -401,14 +408,16 @@
   gap: 8px;
 }
 
-label { 
-  font-size: 0.7rem; 
-  color: var(--text-muted); 
-  font-weight: 700; 
-  letter-spacing: 0.5px; 
+label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.dark-input, .input-wrapper input, .input-wrapper select {
+.dark-input,
+.input-wrapper input,
+.input-wrapper select {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   color: white;
@@ -419,7 +428,8 @@ label {
   transition: all 0.2s;
 }
 
-.dark-input:focus, .input-wrapper input:focus {
+.dark-input:focus,
+.input-wrapper input:focus {
   outline: none;
   border-color: var(--color-mint);
 }
@@ -478,39 +488,39 @@ label {
   border-color: var(--color-mint);
 }
 
-.widget-title { 
-  font-size: 0.6rem; 
-  color: var(--text-muted); 
-  display: block; 
+.widget-title {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  display: block;
   margin-bottom: 15px;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
 
-.card-preview { 
-  background: var(--color-bg); 
-  border: 1px solid var(--color-border); 
-  padding: 16px; 
-  border-radius: 10px; 
+.card-preview {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 16px;
+  border-radius: 10px;
 }
 
-.card-top { 
-  display: flex; 
-  align-items: center; 
+.card-top {
+  display: flex;
+  align-items: center;
   gap: 12px;
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
 }
 
-.q-logo { 
-  width: 40px; 
-  height: 40px; 
-  background: var(--color-mint); 
-  color: var(--color-bg); 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  border-radius: 8px; 
-  font-weight: bold; 
+.q-logo {
+  width: 40px;
+  height: 40px;
+  background: var(--color-mint);
+  color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: bold;
   font-size: 18px;
 }
 
@@ -546,11 +556,11 @@ label {
   margin-top: 12px;
 }
 
-.tag { 
-  font-size: 0.7rem; 
-  border: 1px solid var(--color-border); 
-  padding: 4px 8px; 
-  border-radius: 4px; 
+.tag {
+  font-size: 0.7rem;
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
+  border-radius: 4px;
   color: var(--text-muted);
   background: var(--color-bg);
 }
@@ -612,46 +622,46 @@ label {
     gap: 16px;
     padding: 16px 20px;
   }
-  
+
   .header-left {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   .nav-links {
     width: 100%;
     justify-content: space-around;
   }
-  
+
   .layout-grid {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  
+
   .row {
     grid-template-columns: 1fr;
   }
-  
+
   .banner-success {
     flex-direction: column;
     gap: 16px;
     text-align: center;
   }
-  
+
   .banner-info {
     flex-direction: column;
   }
-  
+
   .form-header {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .avatar-upload {
     margin-left: 0;
     align-self: center;
   }
-  
+
   .container {
     padding: 20px;
   }

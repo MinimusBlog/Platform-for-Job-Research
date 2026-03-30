@@ -2,21 +2,33 @@
   <div
     class="dashboard min-h-screen bg-[#050505] text-white flex flex-col font-sans selection:bg-mint selection:text-bg"
   >
-    <!-- Фоновое свечение -->
     <div
       class="fixed inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(0,229,160,0.02),_transparent_50%)] pointer-events-none"
     ></div>
 
-    <!-- Шапка из скриншота -->
     <header
       class="relative z-10 flex items-center justify-between px-10 py-5 border-b border-white/5 bg-black/40 backdrop-blur-xl"
     >
       <div class="flex items-center gap-12">
         <div class="logo text-lg font-black tracking-[-0.05em] text-mint uppercase">ТРАМПЛИН</div>
         <nav class="flex gap-8 text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">
-          <a href="#" class="hover:text-white transition-colors">Компания</a>
-          <a href="#" class="hover:text-white transition-colors">Возможности</a>
-          <a href="#" class="text-mint border-b border-mint pb-1">Отклики</a>
+          <router-link
+            :to="{ name: 'company-profile' }"
+            class="hover:text-white transition-colors"
+            active-class="text-white"
+            >Компания</router-link
+          >
+          <router-link
+            :to="{ name: 'company-opportunities' }"
+            class="hover:text-white transition-colors"
+            active-class="text-white"
+            >Возможности</router-link
+          >
+          <router-link
+            :to="{ name: 'company-responses' }"
+            class="text-mint border-b border-mint pb-1"
+            >Отклики</router-link
+          >
           <a href="#" class="hover:text-white transition-colors">Аналитика</a>
         </nav>
       </div>

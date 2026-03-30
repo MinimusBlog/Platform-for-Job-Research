@@ -22,6 +22,12 @@ import AdminCard from '../views/admin/AdminCard.vue'
 import onboardContact from '../views/onboarding/onboardContact.vue'
 import onboardVacansi from '../views/onboarding/onboardVacansi.vue'
 
+//работодатель ЛК
+import CompanyHans from '../views/company/companyHans.vue'
+import CompanyVouke from '../views/company/companyVouke.vue'
+import CompanyCreate from '../views/company/companyCreate.vue' 
+import CompanyProfile from '../views/company/companyProfile.vue' 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -47,11 +53,21 @@ const router = createRouter({
       path: '/company',
       meta: { requiresAuth: true, requiresEmployer: true },
       children: [
-        {
-          path: 'dashboard',
-          name: 'company-dashboard',
-          component: () => import('../views/Company/companyVouke.vue'),
+        { 
+          path: 'opportunities', // Это будет основной страницей
+          name: 'company-opportunities', 
+          component: CompanyHans 
         },
+        { 
+          path: 'responses', 
+          name: 'company-responses', 
+          component: CompanyVouke 
+        },
+        { path: 'create', name: 'company-create', component: CompanyCreate },
+        { path: 'profile', name: 'company-profile', component: CompanyProfile },
+        
+        { path: '', redirect: { name: 'company-opportunities' } },
+        { path: 'dashboard', redirect: { name: 'company-opportunities' } }
       ],
     },
 
