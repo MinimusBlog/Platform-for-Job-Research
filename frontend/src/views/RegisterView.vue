@@ -256,10 +256,36 @@ const handleRegister = async () => {
 
     console.log('Отправка на бэкенд:', payload)
 
-    await axios.post('http://localhost:8000/api/auth/register', payload)
+    const response = await axios.post('http://localhost:8000/api/auth/register', payload)
+    const data = response?.data || {}
 
-    alert('Регистрация прошла успешно! Войдите в аккаунт.')
-    registerStore.setStep(2)
+    // Если бэкенд вернул токен/пользователя — используем его, иначе создаём минимальную сессию локально
+    const userData = {
+      ...data,
+      email: data.email || payload.email,
+      role: data.role || payload.role,
+      username: data.username || payload.username,
+      name: data.name || data.username || payload.username,
+    }
+
+    authStore.login(userData)
+
+    if (registerStore.selectedRole === 'applicant') {
+      router.push({ name: 'applicant-jobs' })
+      return
+    }
+
+    if (registerStore.selectedRole === 'employer') {
+      router.push({ name: 'company-dashboard' })
+      return
+    }
+
+    if (registerStore.selectedRole === 'admin') {
+      router.push({ name: 'admin-main' })
+      return
+    }
+
+    router.push('/')
   } catch (error) {
     console.error('Ошибка:', error.response?.data)
     const detail = error.response?.data?.detail
@@ -280,7 +306,26 @@ const handleLogin = async () => {
   loading.value = true
   try {
     // Здесь будет запрос на получение токена
-    authStore.login({ email: loginEmail.value, role: registerStore.selectedRole })
+    const userData = {
+      email: loginEmail.value,
+      role: registerStore.selectedRole,
+      username: loginEmail.value?.split('@')?.[0] || 'user',
+      name: loginEmail.value?.split('@')?.[0] || 'user',
+    }
+    authStore.login(userData)
+
+    if (registerStore.selectedRole === 'applicant') {
+      router.push({ name: 'applicant-jobs' })
+      return
+    }
+    if (registerStore.selectedRole === 'employer') {
+      router.push({ name: 'company-dashboard' })
+      return
+    }
+    if (registerStore.selectedRole === 'admin') {
+      router.push({ name: 'admin-main' })
+      return
+    }
     router.push('/')
   } catch (error) {
     alert('Ошибка входа. Проверьте данные.')

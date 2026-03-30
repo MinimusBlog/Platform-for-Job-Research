@@ -11,6 +11,7 @@ import RegisterStep2View from '../views/RegisterStep2View.vue'
 import ApplicantView from '../views/applicant/applicant.vue'
 import ApplicantNetworkView from '../views/applicant/applicantnetwork.vue'
 import ApplicantProfileView from '../views/applicant/applicantprofile.vue'
+import ApplicantJobsView from '../views/applicant/applicantJobs.vue'
 
 // Админка
 import AdminMain from '../views/admin/adminMain.vue'
@@ -37,6 +38,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         { path: '', name: 'applicant', component: ApplicantView },
+        { path: 'jobs', name: 'applicant-jobs', component: ApplicantJobsView },
         { path: 'profile', name: 'applicant-profile', component: ApplicantProfileView },
         { path: 'network', name: 'applicant-network', component: ApplicantNetworkView },
       ],
