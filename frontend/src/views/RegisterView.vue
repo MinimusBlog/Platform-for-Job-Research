@@ -281,7 +281,7 @@ const handleRegister = async () => {
     }
 
     if (registerStore.selectedRole === 'admin') {
-      router.push({ name: 'admin-main' })
+      router.push({ name: 'home' })
       return
     }
 
@@ -323,7 +323,7 @@ const handleLogin = async () => {
       return
     }
     if (registerStore.selectedRole === 'admin') {
-      router.push({ name: 'admin-main' })
+      router.push({ name: 'home' })
       return
     }
     router.push('/')
